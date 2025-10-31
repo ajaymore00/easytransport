@@ -1,0 +1,31 @@
+<div class="flex h-screen bg-gradient-to-br from-sky-500 via-blue-600 to-cyan-500 overflow-hidden">
+  <!-- Sidebar -->
+  <app-sidebar
+    [class.hidden]="!sidebarOpen && isSmallScreen"
+    [class.fixed]="isSmallScreen"
+    [class.z-50]="isSmallScreen" (menuToggle)="toggleSidebar()"
+    class="backdrop-blur-md bg-white/10 text-white shadow-lg transition-all duration-300 ease-in-out md:relative md:flex md:flex-col md:w-64"
+  ></app-sidebar>
+
+  <!-- Overlay for mobile -->
+  <div
+    *ngIf="sidebarOpen && isSmallScreen"
+    class="fixed inset-0 bg-black/40 z-40 md:hidden"
+    (click)="toggleSidebar()"
+  ></div>
+
+  <!-- Main Content -->
+  <div class="flex flex-col flex-1 w-full   transition-all duration-300 ease-in-out">
+    <!-- Header -->
+    <app-header (menuToggle)="toggleSidebar()"></app-header>
+
+    <!-- Main content -->
+    <main class="flex-1 overflow-y-auto  mt-16 sm:p-6 p-0">
+      <div
+        class="bg-white/20 backdrop-blur-md shadow-xl  text-white rounded-none sm:p-6 p-0 sm:rounded-2xl"
+      >
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>

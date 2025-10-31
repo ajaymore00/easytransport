@@ -1,0 +1,59 @@
+<div
+  class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-700 via-blue-600 to-cyan-500 p-4">
+  <div
+    class="flex flex-col md:flex-row bg-white/10 backdrop-blur-xl text-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl">
+
+    <!-- Left section -->
+    <div class="hidden md:flex md:w-1/2 bg-gradient-to-tr from-cyan-400 to-blue-600 items-center justify-center p-8">
+      <div class="text-center">
+        <h2 class="text-4xl font-bold mb-4 animate-bounce">🚛 Join Transport Portal</h2>
+        <p class="text-sm text-white/80">Sign up and manage your transport business easily.</p>
+      </div>
+    </div>
+
+    <!-- Right section (form) -->
+    <div class="w-full md:w-1/2 p-8 md:p-12">
+      <h2 class="text-3xl font-semibold mb-6 text-center md:text-left">Create an Account 📝</h2>
+
+      <form (ngSubmit)="signup()" class="space-y-5">
+        <div>
+          <label>Full Name</label>
+          <input type="text" [(ngModel)]="name" name="name" required
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
+            placeholder="Your Name">
+        </div>
+
+        <div>
+          <label>Email</label>
+          <input type="email" [(ngModel)]="email" name="email" required
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
+            placeholder="you@example.com">
+        </div>
+
+        <div>
+          <label>Password</label>
+          <input type="password" [(ngModel)]="password" name="password" required
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
+            placeholder="••••••••">
+        </div>
+
+        <div>
+          <label>Confirm Password</label>
+          <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
+            placeholder="••••••••">
+        </div>
+
+        <button [disabled]="isLoading"
+          class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-blue-500 hover:to-cyan-400 text-white py-2 rounded-lg font-semibold transition-transform hover:scale-105">
+          {{ isLoading ? 'Creating...' : 'Sign Up' }}
+        </button>
+
+        <div class="text-center text-sm mt-4">
+          Already have an account?
+          <a (click)="routeTo('/auth/login')" class="font-semibold">Login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

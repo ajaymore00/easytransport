@@ -1,16 +1,16 @@
 import { Component, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './layout/header/header.component';
-import { SidebarComponent } from './layout/sidebar/sidebar.component';
+ import { HeaderComponent } from '../header/header.component';  
+ import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-layout',
   imports: [RouterOutlet,HeaderComponent,SidebarComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  templateUrl: './layout.component.html',
+  styleUrl: './layout.component.scss'
 })
-export class AppComponent {
-  sidebarOpen = true;
+export class LayoutComponent {
+ sidebarOpen = true;
 
 
   isSmallScreen = false;

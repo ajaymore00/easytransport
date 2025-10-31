@@ -1,0 +1,50 @@
+<div class="h-full flex flex-col p-4 text-white" (click)="menuToggle.emit()">
+  <h2 class="text-xl font-semibold mb-6 flex items-center gap-2" >
+    🚛 Transport Portal 
+  </h2>
+
+  <nav class="flex flex-col gap-3">
+    <a
+      routerLink="/transport/dashboard"
+      routerLinkActive="bg-white/30"
+      class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
+    >
+      Dashboard
+    </a>
+    <a
+      routerLink="/transport/routes"
+      routerLinkActive="bg-white/30"
+      class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
+    >
+      Routes
+    </a>
+    <a
+      routerLink="/transport/vehicles"
+      routerLinkActive="bg-white/30"
+      class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
+    >
+      Vehicles
+    </a>
+    <a
+      routerLink="/transport/expenses"
+      routerLinkActive="bg-white/30"
+      class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
+    >
+      Expenses
+    </a>
+    <a
+      routerLink="/transport/drivers"
+      routerLinkActive="bg-white/30"
+      class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
+    >
+      Drivers
+    </a>
+    <a
+      routerLink="/transport/tracking"
+      routerLinkActive="bg-white/30"
+      class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
+    >
+      Tracking
+    </a>
+  </nav>
+</div>

@@ -1,0 +1,61 @@
+<div
+  class="min-h-screen bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600 p-3 md:p-8 text-white"
+>
+  
+
+  <!-- Dashboard Grid -->
+  <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <!-- Today's Routes -->
+    <div class="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-md card-scroll">
+      <h2 class="text-lg font-semibold mb-3">Today's Routes</h2>
+      <div *ngFor="let route of todayRoutes" class="border-b border-white/30 py-2">
+        <p class="font-medium">{{ route.route }}</p>
+        <p class="text-sm opacity-80">Time: {{ route.time }}</p>
+        <span
+          class="inline-block text-xs mt-1 px-2 py-1 rounded bg-green-100 text-green-700"
+          >{{ route.status }}</span
+        >
+      </div>
+    </div>
+
+    <!-- Future Routes -->
+    <div class="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-md card-scroll">
+      <h2 class="text-lg font-semibold mb-3">Future Routes</h2>
+      <div *ngFor="let route of futureRoutes" class="border-b border-white/30 py-2">
+        <p class="font-medium">{{ route.route }}</p>
+        <p class="text-sm opacity-80">Date: {{ route.date }}</p>
+      </div>
+    </div>
+
+    <!-- Vehicles -->
+    <div class="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-md card-scroll">
+      <h2 class="text-lg font-semibold mb-3">Vehicles</h2>
+      <div
+        *ngFor="let vehicle of vehicles"
+        class="border-b border-white/30 py-2 hover:bg-white/10 rounded transition"
+      >
+        <p class="font-medium">{{ vehicle.name }}</p>
+        <p class="text-sm opacity-80">Type: {{ vehicle.type }}</p>
+        <p class="text-xs text-green-300">{{ vehicle.status }}</p>
+      </div>
+    </div>
+
+    <!-- Expenses -->
+    <div class="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-md card-scroll">
+      <h2 class="text-lg font-semibold mb-3">Expenses</h2>
+      <div *ngFor="let exp of expenses" class="border-b border-white/30 py-2">
+        <p>{{ exp.type }} - ₹{{ exp.amount }}</p>
+        <p class="text-xs opacity-80">{{ exp.date }}</p>
+      </div>
+    </div>
+
+    <!-- Drivers -->
+    <div class="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-md card-scroll">
+      <h2 class="text-lg font-semibold mb-3">Drivers</h2>
+      <div *ngFor="let driver of drivers" class="border-b border-white/30 py-2">
+        <p class="font-medium">{{ driver.name }}</p>
+        <p class="text-sm opacity-80">{{ driver.contact }}</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-cyan-500 to-indigo-700 p-4">
+  <div class="flex flex-col md:flex-row bg-white/10 backdrop-blur-xl text-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl">
+
+    <!-- Left side (banner) -->
+    <div class="hidden md:flex md:w-1/2 bg-gradient-to-tr from-cyan-400 to-blue-600 items-center justify-center p-8">
+      <div class="text-center">
+        <h2 class="text-4xl font-bold mb-4 animate-bounce">🚚 Transport Portal</h2>
+        <p class="text-sm text-white/80">Manage your logistics faster and smarter with our platform.</p>
+      </div>
+    </div>
+
+    <!-- Right side (form) -->
+    <div class="w-full md:w-1/2 p-8 md:p-12">
+      <h2 class="text-3xl font-semibold mb-6 text-center md:text-left">Welcome Back 👋</h2>
+
+      <form (ngSubmit)="login()" class="space-y-6">
+        <div>
+          <label>Email</label>
+          <input type="email" [(ngModel)]="email" name="email" required
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none border border-white/30 placeholder-white/60"
+            placeholder="you@example.com">
+        </div>
+
+        <div>
+          <label>Password</label>
+          <div class="relative">
+            <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required
+              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none border border-white/30 placeholder-white/60"
+              placeholder="••••••••">
+            <button type="button" (click)="togglePassword()" class="absolute right-3 top-2.5 text-sm">
+              {{ showPassword ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+        </div>
+
+        <button [disabled]="isLoading"
+          class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-blue-500 hover:to-cyan-400 text-white py-2 rounded-lg font-semibold transition-transform hover:scale-105">
+          {{ isLoading ? 'Logging in...' : 'Login' }}
+        </button>
+
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-2 text-sm mt-4">
+         
+          <a (click)="routeTo('/auth/forgot-password')" >Forgot password?</a>
+          <a (click)="routeTo('/auth/signup')" >Create account</a>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
