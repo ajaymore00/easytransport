@@ -1,20 +1,25 @@
-<main class="flex-1 overflow-y-auto min-h-screen p-4 md:p-6  bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-gray-100">
+<main
+  class="flex-1 overflow-y-auto min-h-screen p-4 md:p-8 bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600 text-white"
+>
   <!-- Header -->
-  <div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold text-blue-400">🚛 Route Management</h2>
-    <button
-      (click)="openForm()"
-      class="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 px-5 py-2 rounded-xl text-white font-medium shadow-md hover:shadow-lg transition-all duration-300"
-    >
-      + Add Route
-    </button>
-  </div>
+  
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+      <h2 class="text-2xl font-bold text-white mb-3 md:mb-0">🚛 <span>Route Management</span></h2>
+      <button
+        (click)="openForm()"
+        class="px-4 py-2 bg-white text-blue-600 font-semibold rounded-lg shadow-md hover:bg-blue-50 transition"
+      >
+        + Add Route
+      </button>
+    </div>
 
   <!-- Table Section -->
-  <div class="bg-white/10 backdrop-blur-lg border border-white/10 rounded-2xl shadow-2xl p-4 md:p-6 overflow-x-auto">
+  <div
+    class="bg-white/20 backdrop-blur-lg border border-white/20 rounded-2xl shadow-xl p-4 md:p-6 overflow-x-auto"
+  >
     <table class="min-w-full text-left text-sm md:text-base">
       <thead>
-        <tr class="border-b border-gray-300 text-gray-300">
+        <tr class="border-b border-white/20 text-white/80">
           <th class="p-2">Route</th>
           <th class="p-2">Start</th>
           <th class="p-2">End</th>
@@ -26,7 +31,7 @@
       <tbody>
         <tr
           *ngFor="let r of routes"
-          class="border-b border-white/10 hover:bg-blue-500/10 transition-all duration-200"
+          class="border-b border-white/10 hover:bg-white/10 transition-all duration-200"
         >
           <td class="p-2">{{ r.name }}</td>
           <td class="p-2">{{ r.startLocation }}</td>
@@ -34,13 +39,23 @@
           <td class="p-2 hidden md:table-cell">{{ r.driver }}</td>
           <td class="p-2 hidden md:table-cell">{{ r.vehicle }}</td>
           <td class="p-2 text-center space-x-3">
-            <button (click)="openForm(r)" class="text-yellow-400 hover:text-yellow-300 transition">Edit</button>
-            <button (click)="deleteRoute(r.id)" class="text-red-400 hover:text-red-300 transition">Delete</button>
+            <button
+              (click)="openForm(r)"
+              class="text-yellow-300 hover:text-yellow-200 transition"
+            >
+              Edit
+            </button>
+            <button
+              (click)="deleteRoute(r.id)"
+              class="text-red-300 hover:text-red-200 transition"
+            >
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
-    <p *ngIf="routes.length === 0" class="text-center text-gray-400 mt-4">
+    <p *ngIf="routes.length === 0" class="text-center text-white/70 mt-4">
       No routes added yet.
     </p>
   </div>
