@@ -21,6 +21,27 @@ export const LAYOUT_ROUTES: Routes = [
                     ),
             },
             {
+                path: 'drivers',
+                loadComponent: () =>
+                    import('./../driver/driver.component').then(
+                        (m) => m.DriverComponent
+                    ),
+            },
+             {
+                path: 'expenses',
+                loadComponent: () =>
+                    import('./../expense/expense.component').then(
+                        (m) => m.ExpenseComponent
+                    ),
+            },
+             {
+                path: 'routes',
+                loadComponent: () =>
+                    import('./../route/route.component').then(
+                        (m) => m.RouteComponent
+                    ),
+            },
+            {
                 path: '',
                 redirectTo: 'dashboard',
                 pathMatch: 'full',
