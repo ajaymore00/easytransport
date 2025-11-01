@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
+import { CommonModule } from '@angular/common'; 
+import { Router } from '@angular/router';
 @Component({
   standalone: true,
   selector: 'app-header',
@@ -17,11 +17,17 @@ export class HeaderComponent {
     { message: 'Route Pune → Goa scheduled for tomorrow', time: '1 hr ago' },
     { message: 'Driver Rajesh completed route Mumbai → Thane', time: '3 hrs ago' },
   ];
-
+  constructor(private router: Router) {}
   toggleNotifications() { 
     this.showNotifications = !this.showNotifications;
   }
   clearNotifications(){
     this.notifications = [];
+  }
+    logout() {
+    if (confirm('Are you sure you want to log out?')) {
+      localStorage.clear();
+      this.router.navigate(['/login']);
+    }
   }
 }
