@@ -1,58 +1,148 @@
-<div
-  class="min-h-screen bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600 p-3 md:p-8 text-white"
->
-  
+<div class="min-h-screen bg-gradient-to-br from-blue-700 via-cyan-500 to-blue-800 text-white p-4 md:p-8">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+    <h1 class="text-3xl font-bold tracking-wide mb-3 md:mb-0 flex items-center gap-2">
+      <span class="bg-white/20 rounded-full p-2">🚛</span> Transport Dashboard
+    </h1>
+
+    <div class="flex gap-2">
+      <button
+        class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium backdrop-blur-md transition-all"
+      >
+        Refresh
+      </button>
+      <button
+        class="bg-gradient-to-r from-cyan-400 to-blue-400 hover:opacity-90 px-4 py-2 rounded-lg text-sm font-semibold shadow-md transition-all"
+      >
+        + Add Route
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Section -->
+  <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+    <div
+      class="bg-white/10 backdrop-blur-xl rounded-2xl p-5 shadow-xl hover:scale-[1.03] transition-all border border-white/20"
+    >
+      <p class="text-sm text-white/70">Total Vehicles</p>
+      <div class="flex justify-between items-center mt-1">
+        <h2 class="text-3xl font-bold">{{ vehicles.length }}</h2>
+        <span class="text-3xl">🚚</span>
+      </div>
+    </div>
+
+    <div
+      class="bg-white/10 backdrop-blur-xl rounded-2xl p-5 shadow-xl hover:scale-[1.03] transition-all border border-white/20"
+    >
+      <p class="text-sm text-white/70">Total Drivers</p>
+      <div class="flex justify-between items-center mt-1">
+        <h2 class="text-3xl font-bold">{{ drivers.length }}</h2>
+        <span class="text-3xl">👨‍✈️</span>
+      </div>
+    </div>
+
+    <div
+      class="bg-white/10 backdrop-blur-xl rounded-2xl p-5 shadow-xl hover:scale-[1.03] transition-all border border-white/20"
+    >
+      <p class="text-sm text-white/70">Active Routes</p>
+      <div class="flex justify-between items-center mt-1">
+        <h2 class="text-3xl font-bold">{{ todayRoutes.length }}</h2>
+        <span class="text-3xl">🛣️</span>
+      </div>
+    </div>
+
+    <div
+      class="bg-white/10 backdrop-blur-xl rounded-2xl p-5 shadow-xl hover:scale-[1.03] transition-all border border-white/20"
+    >
+      <p class="text-sm text-white/70">Total Expenses</p>
+      <div class="flex justify-between items-center mt-1">
+        <h2 class="text-3xl font-bold">₹{{ totalExpenses }}</h2>
+        <span class="text-3xl">💰</span>
+      </div>
+    </div>
+  </div>
 
   <!-- Dashboard Grid -->
   <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
     <!-- Today's Routes -->
-    <div class="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-md card-scroll">
-      <h2 class="text-lg font-semibold mb-3">Today's Routes</h2>
-      <div *ngFor="let route of todayRoutes" class="border-b border-white/30 py-2">
-        <p class="font-medium">{{ route.route }}</p>
-        <p class="text-sm opacity-80">Time: {{ route.time }}</p>
-        <span
-          class="inline-block text-xs mt-1 px-2 py-1 rounded bg-green-100 text-green-700"
-          >{{ route.status }}</span
-        >
-      </div>
-    </div>
-
-    <!-- Future Routes -->
-    <div class="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-md card-scroll">
-      <h2 class="text-lg font-semibold mb-3">Future Routes</h2>
-      <div *ngFor="let route of futureRoutes" class="border-b border-white/30 py-2">
-        <p class="font-medium">{{ route.route }}</p>
-        <p class="text-sm opacity-80">Date: {{ route.date }}</p>
+    <div
+      class="bg-white/15 backdrop-blur-xl rounded-2xl p-5 shadow-lg hover:shadow-cyan-400/30 transition-all border border-white/10 card-scroll"
+    >
+      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+        <span class="text-cyan-300 text-xl">📍</span> Today's Routes
+      </h2>
+      <div *ngFor="let route of todayRoutes" class="border-b border-white/20 py-3 last:border-none">
+        <div class="flex justify-between">
+          <p class="font-semibold">{{ route.route }}</p>
+          <span
+            class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full font-semibold"
+          >
+            {{ route.status }}
+          </span>
+        </div>
+        <p class="text-sm opacity-80 mt-1">Time: {{ route.time }}</p>
       </div>
     </div>
 
     <!-- Vehicles -->
-    <div class="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-md card-scroll">
-      <h2 class="text-lg font-semibold mb-3">Vehicles</h2>
-      <div
-        *ngFor="let vehicle of vehicles"
-        class="border-b border-white/30 py-2 hover:bg-white/10 rounded transition"
-      >
-        <p class="font-medium">{{ vehicle.name }}</p>
+    <div
+      class="bg-white/15 backdrop-blur-xl rounded-2xl p-5 shadow-lg hover:shadow-blue-400/30 transition-all border border-white/10 card-scroll"
+    >
+      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+        <span class="text-yellow-300 text-xl">🚗</span> Vehicles
+      </h2>
+      <div *ngFor="let vehicle of vehicles" class="border-b border-white/20 py-3 last:border-none">
+        <p class="font-semibold">{{ vehicle.name }}</p>
         <p class="text-sm opacity-80">Type: {{ vehicle.type }}</p>
-        <p class="text-xs text-green-300">{{ vehicle.status }}</p>
+        <p
+          [ngClass]="{
+            'text-green-300': vehicle.status === 'Active',
+            'text-red-300': vehicle.status === 'Inactive'
+          }"
+          class="text-xs font-medium"
+        >
+          {{ vehicle.status }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Future Routes -->
+    <div
+      class="bg-white/15 backdrop-blur-xl rounded-2xl p-5 shadow-lg hover:shadow-indigo-400/30 transition-all border border-white/10 card-scroll"
+    >
+      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+        <span class="text-blue-300 text-xl">🗓️</span> Upcoming Routes
+      </h2>
+      <div *ngFor="let route of futureRoutes" class="border-b border-white/20 py-3 last:border-none">
+        <p class="font-semibold">{{ route.route }}</p>
+        <p class="text-sm opacity-80">Date: {{ route.date }}</p>
       </div>
     </div>
 
     <!-- Expenses -->
-    <div class="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-md card-scroll">
-      <h2 class="text-lg font-semibold mb-3">Expenses</h2>
-      <div *ngFor="let exp of expenses" class="border-b border-white/30 py-2">
-        <p>{{ exp.type }} - ₹{{ exp.amount }}</p>
+    <div
+      class="bg-white/15 backdrop-blur-xl rounded-2xl p-5 shadow-lg hover:shadow-green-400/30 transition-all border border-white/10 card-scroll"
+    >
+      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+        <span class="text-red-300 text-xl">💵</span> Recent Expenses
+      </h2>
+      <div *ngFor="let exp of expenses" class="border-b border-white/20 py-3 last:border-none">
+        <div class="flex justify-between">
+          <p class="font-medium">{{ exp.type }}</p>
+          <p class="text-sm font-semibold">₹{{ exp.amount }}</p>
+        </div>
         <p class="text-xs opacity-80">{{ exp.date }}</p>
       </div>
     </div>
 
     <!-- Drivers -->
-    <div class="bg-white/20 backdrop-blur-md rounded-xl p-4 shadow-md card-scroll">
-      <h2 class="text-lg font-semibold mb-3">Drivers</h2>
-      <div *ngFor="let driver of drivers" class="border-b border-white/30 py-2">
+    <div
+      class="bg-white/15 backdrop-blur-xl rounded-2xl p-5 shadow-lg hover:shadow-purple-400/30 transition-all border border-white/10 card-scroll"
+    >
+      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+        <span class="text-purple-300 text-xl">👷‍♂️</span> Drivers
+      </h2>
+      <div *ngFor="let driver of drivers" class="border-b border-white/20 py-3 last:border-none">
         <p class="font-medium">{{ driver.name }}</p>
         <p class="text-sm opacity-80">{{ driver.contact }}</p>
       </div>

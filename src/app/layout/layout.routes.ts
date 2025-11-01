@@ -42,6 +42,13 @@ export const LAYOUT_ROUTES: Routes = [
                     ),
             },
             {
+                path: 'tracking',
+                loadComponent: () =>
+                    import('./../tracking/tracking.component').then(
+                        (m) => m.TrackingComponent
+                    ),
+            },
+            {
                 path: '',
                 redirectTo: 'dashboard',
                 pathMatch: 'full',

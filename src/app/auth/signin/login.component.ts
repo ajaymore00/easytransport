@@ -23,10 +23,11 @@ export class LoginComponent {
   }
 
   login() {
+    
     this.isLoading = true;
     setTimeout(() => {
       this.isLoading = false;
-      if (this.email && this.password) {
+      if (this.email && this.password && this.email === 'Ajay' && this.password === 'test') {
         localStorage.setItem('token', 'demo-token');
         this.router.navigate(['transport/dashboard']);
       } else {

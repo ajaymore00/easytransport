@@ -32,4 +32,8 @@ showNotifications = false;
     toggleNotifications() {
     this.showNotifications = !this.showNotifications;
   }
+  get totalExpenses() {
+  return this.expenses.reduce((sum, e) => sum + e.amount, 0);
+}
+
 }
