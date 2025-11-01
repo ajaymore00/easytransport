@@ -2,10 +2,11 @@ import { Component, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
  import { HeaderComponent } from '../header/header.component';  
  import { SidebarComponent } from '../sidebar/sidebar.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-layout',
-  imports: [RouterOutlet,HeaderComponent,SidebarComponent],
+  imports: [RouterOutlet,HeaderComponent,SidebarComponent,CommonModule],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
