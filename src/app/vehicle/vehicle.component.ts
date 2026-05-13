@@ -1,10 +1,12 @@
  
 
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router'; 
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { DashboardService } from '../services/dashboard.service';
+import { HttpClientModule } from '@angular/common/http';
 interface Vehicle {
   id: number;
   name: string;
@@ -20,40 +22,25 @@ interface Vehicle {
 @Component({
   selector: 'app-vehicle',
   standalone: true,
-   imports: [CommonModule, RouterModule,ReactiveFormsModule,FormsModule],
+   imports: [CommonModule, RouterModule,ReactiveFormsModule,FormsModule,HttpClientModule],
   templateUrl: './vehicle.component.html',
-  styleUrl: './vehicle.component.scss'
+  styleUrl: './vehicle.component.scss',
+  providers: [DashboardService],
 })
-export class VehicleComponent {
-  vehicles: Vehicle[] = [
-    {
-      id: 1,
-      name: 'Tata Ace',
-      model: '2020',
-      registrationNo: 'MH-12-AB-1234',
-      type: 'Own',
-      driverName: 'Ramesh',
-      driverContact: '9876543210',
-      status: 'Active',
-      dateAdded: new Date(),
-    },
-    {
-      id: 2,
-      name: 'Eicher 1100',
-      model: '2022',
-      registrationNo: 'MH-14-CD-4321',
-      type: 'Rented',
-      driverName: 'Suresh',
-      driverContact: '9876501234',
-      status: 'On Route',
-      dateAdded: new Date(),
-    },
-  ];
+export class VehicleComponent implements OnInit {
+  vehicles: Vehicle[] = [];
 
+  dashboardService = inject(DashboardService);  
   showForm = false;
   editingVehicle: Vehicle | null = null;
   vehicleForm: Partial<Vehicle> = {};
 
+  ngOnInit() {
+    console.log('Fetching vehicles from API...');
+     this.dashboardService.getVehicles().subscribe((data: any) => {
+      this.vehicles = data; 
+    });
+  }
   openForm() {
     this.showForm = true;
     this.editingVehicle = null;

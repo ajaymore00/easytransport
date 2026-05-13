@@ -1,7 +1,25 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
+  private baseUrl = `${environment.apiUrl}/vehicles`;
+  constructor(private http: HttpClient) {}
+
+   getVehicles():Observable<any> {
+    return this.http.get(this.baseUrl);
+  }
+
+  addVehicle(vehicle: any) {
+    return this.http.post(this.baseUrl, vehicle);
+  }
+
+  deleteVehicle(id: string) {
+    return this.http.delete(`${this.baseUrl}/${id}`);
+  }
+  
   getTodayRoutes() {
     return [
       { id: 1, route: 'Pune → Mumbai', time: '08:00 AM', status: 'On the way' },
@@ -24,12 +42,12 @@ export class DashboardService {
     ];
   }
 
-  getVehicles() {
-    return [
-      { name: 'Tata Ace', type: 'Own', status: 'Active' },
-      { name: 'Eicher 1100', type: 'Rented', status: 'On Route' },
-    ];
-  }
+  // getVehicles() {
+  //   return [
+  //     { name: 'Tata Ace', type: 'Own', status: 'Active' },
+  //     { name: 'Eicher 1100', type: 'Rented', status: 'On Route' },
+  //   ];
+  // }
 
   getExpenses() {
     return [

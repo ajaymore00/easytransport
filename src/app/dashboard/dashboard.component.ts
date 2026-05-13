@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { DashboardService } from './dashboard.service';
+import { DashboardService } from '../services/dashboard.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HttpClientModule],
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -18,22 +19,22 @@ export class DashboardComponent {
   expenses: any[] = [];
   drivers: any[] = [];
   notifications: any[] = [];
-showNotifications = false;
-  constructor(private dashboardService: DashboardService) {}
+  showNotifications = false;
+  constructor(private dashboardService: DashboardService) { }
 
   ngOnInit() {
     this.todayRoutes = this.dashboardService.getTodayRoutes();
     this.futureRoutes = this.dashboardService.getFutureRoutes();
-    this.vehicles = this.dashboardService.getVehicles();
+   
     this.expenses = this.dashboardService.getExpenses();
     this.drivers = this.dashboardService.getDrivers();
     this.notifications = this.dashboardService.getNotifications();
   }
-    toggleNotifications() {
+  toggleNotifications() {
     this.showNotifications = !this.showNotifications;
   }
   get totalExpenses() {
-  return this.expenses.reduce((sum, e) => sum + e.amount, 0);
-}
+    return this.expenses.reduce((sum, e) => sum + e.amount, 0);
+  }
 
 }
