@@ -5,32 +5,40 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  private baseUrl = `${environment.apiUrl}/vehicles`;
-  constructor(private http: HttpClient) {}
+  private baseUrl = `${environment.apiUrl}`;
+  constructor(private http: HttpClient) { }
 
-   getVehicles():Observable<any> {
-    return this.http.get(this.baseUrl);
+  getData(url: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${url}`);
   }
 
-  addVehicle(vehicle: any) {
-    return this.http.post(this.baseUrl, vehicle);
+  getDataById(url:string, id: string) {
+    return this.http.get(`${this.baseUrl}/${url}/${id}`);
+  }
+ 
+  addData(url:string,vehicle: any) {
+    return this.http.post(`${this.baseUrl}/${url}`, vehicle);
   }
 
-  deleteVehicle(id: string) {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+  updateData(url:string, id: string, vehicle: any) {
+    return this.http.put(`${this.baseUrl}/${url}/${id}`, vehicle);
   }
-  
+
+  deleteData(url:string, id: string) {
+    return this.http.delete(`${this.baseUrl}/${url}/${id}`);
+  }
+
   getTodayRoutes() {
     return [
       { id: 1, route: 'Pune → Mumbai', time: '08:00 AM', status: 'On the way' },
       { id: 2, route: 'Thane → Nashik', time: '09:30 AM', status: 'Pending' },
-       { id: 1, route: 'Pune → Mumbai', time: '08:00 AM', status: 'On the way' },
+      { id: 1, route: 'Pune → Mumbai', time: '08:00 AM', status: 'On the way' },
       { id: 2, route: 'Thane → Nashik', time: '09:30 AM', status: 'Pending' },
-       { id: 1, route: 'Pune → Mumbai', time: '08:00 AM', status: 'On the way' },
+      { id: 1, route: 'Pune → Mumbai', time: '08:00 AM', status: 'On the way' },
       { id: 2, route: 'Thane → Nashik', time: '09:30 AM', status: 'Pending' },
-       { id: 1, route: 'Pune → Mumbai', time: '08:00 AM', status: 'On the way' },
+      { id: 1, route: 'Pune → Mumbai', time: '08:00 AM', status: 'On the way' },
       { id: 2, route: 'Thane → Nashik', time: '09:30 AM', status: 'Pending' },
-       { id: 1, route: 'Pune → Mumbai', time: '08:00 AM', status: 'On the way' },
+      { id: 1, route: 'Pune → Mumbai', time: '08:00 AM', status: 'On the way' },
       { id: 2, route: 'Thane → Nashik', time: '09:30 AM', status: 'Pending' },
     ];
   }
