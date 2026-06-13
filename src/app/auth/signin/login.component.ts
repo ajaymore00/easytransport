@@ -2,41 +2,65 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,HttpClientModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  providers: [AuthService],
 })
 export class LoginComponent {
-  email = '';
+  mobileNumber = '';
   password = '';
   showPassword = false;
   isLoading = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private auth: AuthService) {}
 
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
 
   login() {
-    
+    if (!this.mobileNumber || !this.password) {
+      alert('Please enter mobile number and password');
+      return;
+    }
+
     this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-      if (this.email && this.password && this.email === 'Ajay' && this.password === 'test') {
-        localStorage.setItem('token', 'demo-token');
-        this.router.navigate(['transport/dashboard']);
-      } else {
-        alert('Please enter valid credentials');
+    this.auth.login({ mobileNumber: this.mobileNumber, password: this.password }).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        if (res?.token) {
+          localStorage.setItem('token', res.token);
+          // fetch current user
+          this.auth.me().subscribe({
+            next: (me) => {
+              if (me?.user) {
+                localStorage.setItem('user', JSON.stringify(me.user));
+              }
+              this.router.navigate(['transport/dashboard']);
+            },
+            error: () => {
+              // even if /me fails, navigate
+              this.router.navigate(['transport/dashboard']);
+            }
+          });
+        } else {
+          alert('Login failed');
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        alert(err?.error?.message || 'Login failed');
       }
-    }, 1000);
+    });
   }
   routeTo(path: string) {
-    console.log('Navigating to:', path);
     this.router.navigate([path]);
-  } 
+  }
 }

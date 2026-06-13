@@ -1,241 +1,246 @@
 <main
-  class="flex-1 overflow-y-auto min-h-screen p-4 md:p-8 bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600 text-white"
->
-  <!-- Header -->
-  
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-      <h2 class="text-2xl font-bold text-white mb-3 md:mb-0">🚛 <span>Route Management</span></h2>
-      <button
-        (click)="openForm()"
-        class="px-4 py-2 bg-white text-blue-600 font-semibold rounded-lg shadow-md hover:bg-blue-50 transition"
-      >
-        + Add Route
-      </button>
-    </div>
+  class="flex-1 overflow-y-auto min-h-screen p-4 md:p-8 bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600 text-white">
 
-  <!-- Table Section -->
-  <div
-    class="bg-white/20 backdrop-blur-lg border border-white/20 rounded-2xl shadow-xl p-4 md:p-6 overflow-x-auto"
-  >
-    <table class="min-w-full text-left text-sm md:text-base">
-      <thead>
-        <tr class="border-b border-white/20 text-white/80">
-          <th class="p-2">Route</th>
-          <th class="p-2">Start</th>
-          <th class="p-2">End</th>
-          <th class="p-2 hidden md:table-cell">Driver</th>
-          <th class="p-2 hidden md:table-cell">Vehicle</th>
-          <th class="p-2 text-center">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          *ngFor="let r of routes"
-          class="border-b border-white/10 hover:bg-white/10 transition-all duration-200"
-        >
-          <td class="p-2">{{ r.name }}</td>
-          <td class="p-2">{{ r.startLocation }}</td>
-          <td class="p-2">{{ r.endLocation }}</td>
-          <td class="p-2 hidden md:table-cell">{{ r.driver }}</td>
-          <td class="p-2 hidden md:table-cell">{{ r.vehicle }}</td>
-          <td class="p-2 text-center space-x-3">
-            <button
-              (click)="openForm(r)"
-              class="text-yellow-300 hover:text-yellow-200 transition"
-            >
-              Edit
-            </button>
-            <button
-              (click)="deleteRoute(r.id)"
-              class="text-red-300 hover:text-red-200 transition"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <p *ngIf="routes.length === 0" class="text-center text-white/70 mt-4">
-      No routes added yet.
-    </p>
+  <div class="flex sm:flex-col md:flex-row md:items-center md:justify-between mb-6">
+    <h2 class="text-2xl font-bold text-white mb-3 md:mb-0">Route Management</h2>
+    <button mat-flat-button color="primary" (click)="openForm()" class="text-white font-semibold">
+      + Add Route
+    </button>
   </div>
 
-  <!-- Modal -->
-  <div
-    *ngIf="showForm"
-    class="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 z-[9999]"
-  >
-    <div
-      class="bg-white rounded-xl p-6 h-full overflow-x-auto w-11/12 sm:w-3/4 md:w-1/2 lg:w-1/2 shadow-2xl"
-    >
-      <h3 class="text-xl font-semibold text-blue-700 mb-4">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+    <div *ngFor="let trip of routes"
+      class="bg-white bg-opacity-80 backdrop-blur-lg rounded-xl shadow-md p-4 hover:shadow-lg transition">
+      <!-- Header -->
+      <div class="flex flex-col   justify-between mb-4">
+        <div>
+          <h3 class="text-lg font-semibold  text-gray-800">
+            {{ trip.routeName }}
+          </h3>
+          <p class="text-sm text-gray-600">
+            {{ trip.startLocation }} → {{ trip.endLocation }}
+          </p>
+          <p class="text-xs text-gray-500 mt-1">
+            Date: {{ trip.date | date : "dd-MM-yyyy" }} | Time: {{ trip.startTime | date: "hh:mm a" }} - {{ trip.endTime | date: "hh:mm a" }}
+          </p>
+        </div>
+
+        <div class="mt-3   flex flex-wrap justify-start   gap-1">
+          <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium border border-blue-400">
+            Driver: {{ trip.driverName }}
+          </span>
+          <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium border border-green-400">
+            Vehicle: {{ trip.vehicleNumber }}
+          </span>
+          <span
+            class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium border border-yellow-400">
+            Status: {{ trip.status }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Route Progress -->
+      <div class="relative">
+        <div class="w-full bg-gray-200 h-2 rounded-full mb-4">
+          <div class="bg-blue-600 h-2 rounded-full" [style.width.%]="trip.progress"></div>
+        </div>
+        <p class="text-right text-xs text-gray-500">
+          {{ trip.progress }}% Completed
+        </p>
+      </div>
+
+      <!-- Checkpoints -->
+      <div class="mt-4">
+        <h4 class="font-semibold text-gray-700 mb-2">Checkpoints</h4>
+        <ul class="space-y-2">
+          <li *ngFor="let point of trip.checkpoints"
+            class="flex justify-between items-center border-b border-gray-200 pb-1">
+            <span class="text-blue-600">{{ point.name }}</span>
+            <!-- <span [class.text-green-600]="point.reached" [class.text-gray-500]="!point.reached" 
+              class="text-sm font-medium">-->
+            {{ 'Pending' }}
+            <!-- </span> -->
+          </li>
+        </ul>
+      </div>
+
+      <!-- Footer -->
+      <div class="mt-4 flex justify-end">
+
+        <button mat-icon-button color="accent" (click)="openForm(trip)" aria-label="Edit route">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteRoute(trip.id)" aria-label="Delete route">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button (click)="viewMap(trip)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md">
+          View on Map
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- No Data -->
+  <div *ngIf="routes.length === 0" class="text-center text-gray-500 mt-10">
+    🚗 No active tracking data available.
+  </div>
+
+  <ng-template #routeDialog>
+    <div class="route-dialog">
+      <h3 class="text-2xl font-semibold text-slate-900 mb-4">
         {{ editMode ? 'Edit Route' : 'Add New Route' }}
       </h3>
 
-      <form (ngSubmit)="saveRoute()" class="space-y-4">
-        <div class="grid grid-cols-1 gap-3">
-          <div>
-            <label class="text-sm font-semibold text-gray-300">Route Name</label>
-            <input
-              type="text"
-              [(ngModel)]="formData.name"
-              name="name"
-              placeholder="Enter Route Name"
-              class="p-2 border border-gray-300 rounded-md w-full text-gray-700"
-              required
-            />
-          </div>
+      <form [formGroup]="routeForm"   class="grid gap-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Route Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter route name" />
+            <mat-error *ngIf="getControl('name')?.hasError('required')">Route name is required.</mat-error>
+            <mat-error *ngIf="getControl('name')?.hasError('maxlength')">Max 80 characters.</mat-error>
+          </mat-form-field>
 
-          <div>
-            <label class="text-sm font-semibold text-gray-300">Vendor / Company</label>
-            <input
-              type="text"
-              [(ngModel)]="formData.vendor"
-              name="vendor"
-              placeholder="Enter Vendor / Company"
-              class="p-2 border border-gray-300 rounded-md w-full text-gray-700"
-            />
-          </div>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Vendor / Company</mat-label>
+            <input matInput formControlName="vendor" placeholder="Enter vendor" />
+            <mat-error *ngIf="getControl('vendor')?.hasError('required')">Vendor is required.</mat-error>
+            <mat-error *ngIf="getControl('vendor')?.hasError('maxlength')">Max 100 characters.</mat-error>
+          </mat-form-field>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="text-sm font-semibold text-gray-300">Start Location</label>
-            <input
-              type="text"
-              [(ngModel)]="formData.startLocation"
-              name="startLocation"
-              placeholder="Enter Start Location"
-              class="p-2 border border-gray-300 rounded-md w-full text-gray-700"
-            />
-          </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Start Location</mat-label>
+            <input matInput formControlName="startLocation" placeholder="City, station or depot" />
+            <mat-error *ngIf="getControl('startLocation')?.hasError('required')">Start location is required.</mat-error>
+          </mat-form-field>
 
-          <div>
-            <label class="text-sm font-semibold text-gray-300">End Location</label>
-            <input
-              type="text"
-              [(ngModel)]="formData.endLocation"
-              name="endLocation"
-              placeholder="Enter End Location"
-              class="p-2 border border-gray-300 rounded-md w-full text-gray-700"
-            />
-          </div>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>End Location</mat-label>
+            <input matInput formControlName="endLocation" placeholder="City, station or depot" />
+            <mat-error *ngIf="getControl('endLocation')?.hasError('required')">End location is required.</mat-error>
+          </mat-form-field>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="text-sm font-semibold text-gray-300">Driver</label>
-            <select
-              [(ngModel)]="formData.driver"
-              name="driver"
-              class="p-2 border border-gray-300 rounded-md w-full text-gray-700"
-            >
-              <option value="" disabled>Select Driver</option>
-              <option *ngFor="let driver of drivers" [value]="driver.name">{{ driver.name }}</option>
-            </select>
-          </div>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Driver</mat-label>
+            <mat-select formControlName="driver">
+              <mat-option *ngFor="let driver of drivers" [value]="driver">{{ driver }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="getControl('driver')?.hasError('required')">Pick a driver.</mat-error>
+          </mat-form-field>
 
-          <div>
-            <label class="text-sm font-semibold text-gray-300">Vehicle</label>
-            <select
-              [(ngModel)]="formData.vehicle"
-              name="vehicle"
-              class="p-2 border border-gray-300 rounded-md w-full text-gray-700"
-            >
-              <option value="" disabled>Select Vehicle</option>
-              <option *ngFor="let v of vehicles" [value]="v.name">{{ v.name }}</option>
-            </select>
-          </div>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Vehicle</mat-label>
+            <mat-select formControlName="vehicle">
+              <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle">{{ vehicle }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="getControl('vehicle')?.hasError('required')">Pick a vehicle.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Cargo Type</mat-label>
+            <mat-select formControlName="cargoType">
+              <mat-option *ngFor="let type of cargoTypes" [value]="type">{{ type }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="getControl('cargoType')?.hasError('required')">Cargo type is required.</mat-error>
+          </mat-form-field>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
-            <label class="text-sm font-semibold text-gray-300">Start Date</label>
-            <input
-              type="date"
-              [(ngModel)]="formData.startDate"
-              name="startDate"
-              class="p-2 border border-gray-300 rounded-md w-full text-gray-700"
-            />
-          </div>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Load Weight</mat-label>
+            <input matInput type="text" formControlName="loadWeight" placeholder="e.g. 12 MT" />
+            <mat-error *ngIf="getControl('loadWeight')?.hasError('required')">Load weight is required.</mat-error>
+          </mat-form-field>
 
-          <div>
-            <label class="text-sm font-semibold text-gray-300">Start Time</label>
-            <input
-              type="time"
-              [(ngModel)]="formData.startTime"
-              name="startTime"
-              class="p-2 border border-gray-300 rounded-md w-full text-gray-700"
-            />
-          </div>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Distance (km)</mat-label>
+            <input matInput type="number" formControlName="distanceKm" placeholder="Distance" />
+            <mat-error *ngIf="getControl('distanceKm')?.hasError('required')">Distance is required.</mat-error>
+            <mat-error *ngIf="getControl('distanceKm')?.hasError('min')">Distance must be greater than 0.</mat-error>
+          </mat-form-field>
 
-          <div>
-            <label class="text-sm font-semibold text-gray-300">End Time</label>
-            <input
-              type="time"
-              [(ngModel)]="formData.endTime"
-              name="endTime"
-              class="p-2 border border-gray-300 rounded-md w-full text-gray-700"
-            />
-          </div>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Amount</mat-label>
+            <input matInput type="number" formControlName="amount" placeholder="₹" />
+            <mat-error *ngIf="getControl('amount')?.hasError('required')">Amount is required.</mat-error>
+            <mat-error *ngIf="getControl('amount')?.hasError('min')">Amount must be greater than 0.</mat-error>
+          </mat-form-field>
         </div>
 
-        <!-- Checkpoints -->
+        <div class="grid gap-4 sm:grid-cols-3">
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Shipment Reference</mat-label>
+            <input matInput formControlName="shipmentReference" placeholder="Optional reference" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Route Date</mat-label>
+            <input matInput [matDatepicker]="startDate" id="vehicle-insurance" formControlName="startDate"
+              name="startDate" />
+            <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+            <mat-datepicker #startDate></mat-datepicker>
+
+            <mat-error *ngIf="getControl('startDate')?.hasError('required')">Start date is required.</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Start Time</mat-label>
+              <input matInput formControlName="startTime" [matTimepicker]="startTime">
+              <mat-timepicker-toggle matIconSuffix [for]="startTime" />
+              <mat-timepicker #startTime />
+            <mat-error *ngIf="getControl('startTime')?.hasError('required')">Start time is required.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>End Time</mat-label> 
+             <input matInput formControlName="endTime" [matTimepicker]="endTime">
+              <mat-timepicker-toggle matIconSuffix [for]="endTime" />
+              <mat-timepicker #endTime />
+            <mat-error *ngIf="getControl('endTime')?.hasError('required')">End time is required.</mat-error>
+          </mat-form-field>
+        </div>
+
         <div>
-          <label class="text-sm font-semibold text-gray-300">Checkpoints</label>
-          <div class="flex space-x-2 mt-1">
-            <input
-              type="text"
-              [(ngModel)]="checkpointInput"
-              name="checkpoint"
-              placeholder="Add checkpoint"
-              class="flex-1 p-2 rounded-md bg-white/10 border border-gray-300 text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
-            />
-            <button
-              type="button"
-              (click)="addCheckpoint()"
-              class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md transition-all duration-200"
-            >
-              +
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Checkpoints</mat-label>
+            <div class="checkpoint-row">
+              <input matInput #checkpointInputRef placeholder="Type checkpoint and press add" />
+              <button mat-icon-button type="button" color="primary"
+                (click)="addCheckpointFromTemplate(checkpointInputRef)" aria-label="Add checkpoint">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </mat-form-field>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <button mat-stroked-button *ngFor="let point of routeForm.get('checkpoints')?.value; let i = index"
+              type="button" color="primary" (click)="removeCheckpoint(i)">
+              {{ point }} <mat-icon class="ml-1">close</mat-icon>
             </button>
           </div>
-          <div class="mt-2 flex flex-wrap gap-2">
-            <span
-              *ngFor="let point of formData.checkpoints"
-              class="bg-blue-600/30 border border-blue-400 text-black px-2 py-1 rounded-md text-sm"
-            >
-              {{ point }}
-            </span>
-          </div>
         </div>
 
-        <div>
-          <label class="text-sm font-semibold text-gray-300">Notes</label>
-          <textarea
-            [(ngModel)]="formData.notes"
-            name="notes"
-            rows="2"
-            placeholder="Add any notes..."
-            class="mt-1 p-2 w-full rounded-md bg-white/10 border border-gray-300 text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
-          ></textarea>
-        </div>
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Notes</mat-label>
+          <textarea matInput rows="3" formControlName="notes" placeholder="Add route notes"></textarea>
+        </mat-form-field>
 
-        <div class="flex justify-end space-x-3 mt-4">
-          <button
-            type="button"
-            (click)="closeForm()"
-            class="px-4 py-2 bg-gray-500/40 hover:bg-gray-500/60 text-gray-100 rounded-md transition-all"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-md transition-all"
-          >
-            Save
-          </button>
+        <div class="flex justify-end gap-3 mt-4">
+          <button mat-stroked-button type="button" color="warn" (click)="closeForm()">Cancel</button>
+          <button mat-flat-button color="primary" type="button" (click)="saveRoute()">Save Route</button>
         </div>
       </form>
     </div>
-  </div>
+  </ng-template>
 </main>

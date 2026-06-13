@@ -1,0 +1,449 @@
+// Material Dialog Panel Styling
+::ng-deep .route-dialog-panel {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    border-radius: 12px;
+  }
+
+  .mdc-dialog__surface {
+    border-radius: 12px;
+  }
+}
+
+.route-dialog {
+  padding: 32px 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  max-height: 90vh;
+  overflow-y: auto;
+
+  h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 24px;
+    line-height: 1.4;
+  }
+
+  form {
+    display: grid;
+    gap: 16px;
+
+    .grid {
+      display: grid;
+      gap: 16px;
+
+      &.gap-4 {
+        gap: 16px;
+      }
+
+      &.sm\:grid-cols-2 {
+        @media (min-width: 640px) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      &.sm\:grid-cols-3 {
+        @media (min-width: 640px) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+    }
+
+    mat-form-field {
+      width: 100%;
+
+      .mdc-text-field--filled {
+        background-color: #f3f4f6 !important;
+      }
+
+      .mat-mdc-form-field-error {
+        font-size: 12px !important;
+      }
+
+      .mat-mdc-form-field-hint {
+        font-size: 11px !important;
+      }
+    }
+
+    .checkpoint-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      mat-form-field {
+        flex: 1;
+      }
+
+      button {
+        flex-shrink: 0;
+        height: 40px;
+        width: 40px;
+      }
+    }
+
+    .flex {
+      display: flex;
+
+      &.flex-wrap {
+        flex-wrap: wrap;
+      }
+
+      &.gap-2 {
+        gap: 8px;
+      }
+
+      &.justify-end {
+        justify-content: flex-end;
+      }
+
+      &.gap-3 {
+        gap: 12px;
+      }
+    }
+
+    .mt-2 {
+      margin-top: 8px;
+    }
+
+    .mt-4 {
+      margin-top: 16px;
+    }
+
+    button {
+      &.mat-stroked-button,
+      &.mat-flat-button {
+        min-width: 100px;
+      }
+
+      &[type="submit"] {
+        &.mat-flat-button {
+          background-color: #3b82f6 !important;
+          color: white !important;
+        }
+      }
+
+      &[type="button"][color="warn"] {
+        &.mat-stroked-button {
+          color: #ef4444 !important;
+          border-color: #fca5a5 !important;
+
+          &:hover {
+            background-color: rgba(239, 68, 68, 0.05);
+          }
+        }
+      }
+
+      mat-icon {
+        display: inline-flex;
+        margin-left: 4px;
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    textarea {
+      font-family: inherit;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      padding: 12px;
+      resize: vertical;
+      font-size: 14px;
+
+      &:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+    }
+  }
+}
+
+// Route Card Styling
+main {
+  .grid {
+    display: grid;
+    gap: 16px;
+
+    &.grid-cols-1 {
+      grid-template-columns: 1fr;
+    }
+
+    &.md\:grid-cols-2 {
+      @media (min-width: 768px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    &.lg\:grid-cols-2 {
+      @media (min-width: 1024px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  }
+
+  .bg-white {
+    background: rgba(255, 255, 255, 0.95);
+
+    &.bg-opacity-80 {
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+  }
+
+  .rounded-xl {
+    border-radius: 12px;
+  }
+
+  .shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+  }
+
+  .p-4 {
+    padding: 16px;
+  }
+
+  .mb-4 {
+    margin-bottom: 16px;
+  }
+
+  .mt-3 {
+    margin-top: 12px;
+  }
+
+  .mt-4 {
+    margin-top: 16px;
+  }
+
+  .space-y-2 {
+    & > * {
+      margin-bottom: 8px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .flex {
+    display: flex;
+
+    &.flex-col {
+      flex-direction: column;
+    }
+
+    &.flex-wrap {
+      flex-wrap: wrap;
+    }
+
+    &.justify-start {
+      justify-content: flex-start;
+    }
+
+    &.justify-between {
+      justify-content: space-between;
+    }
+
+    &.justify-end {
+      justify-content: flex-end;
+    }
+
+    &.items-center {
+      align-items: center;
+    }
+
+    &.gap-1 {
+      gap: 4px;
+    }
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .text-gray-800 {
+    color: #1f2937;
+  }
+
+  .text-gray-600 {
+    color: #4b5563;
+  }
+
+  .text-gray-700 {
+    color: #374151;
+  }
+
+  .text-gray-500 {
+    color: #6b7280;
+  }
+
+  .text-blue-600 {
+    color: #2563eb;
+  }
+
+  .text-green-600 {
+    color: #059669;
+  }
+
+  .text-blue-700 {
+    color: #1d4ed8;
+  }
+
+  .font-semibold {
+    font-weight: 600;
+  }
+
+  .font-medium {
+    font-weight: 500;
+  }
+
+  .text-lg {
+    font-size: 18px;
+  }
+
+  .text-sm {
+    font-size: 14px;
+  }
+
+  .text-xs {
+    font-size: 12px;
+  }
+
+  button {
+    &.px-4 {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    &.py-2 {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    &.rounded-md {
+      border-radius: 6px;
+    }
+
+    &.bg-blue-600 {
+      background-color: #2563eb;
+
+      &:hover {
+        background-color: #1d4ed8;
+      }
+    }
+
+    &.text-white {
+      color: white;
+    }
+  }
+
+  .border-b {
+    border-bottom: 1px solid #e5e7eb;
+
+    &.border-gray-200 {
+      border-bottom-color: #e5e7eb;
+    }
+  }
+
+  .pb-1 {
+    padding-bottom: 4px;
+  }
+
+  .relative {
+    position: relative;
+  }
+
+  .w-full {
+    width: 100%;
+  }
+
+  .h-2 {
+    height: 8px;
+  }
+
+  .bg-gray-200 {
+    background-color: #e5e7eb;
+  }
+
+  .bg-blue-600 {
+    background-color: #2563eb;
+  }
+
+  .rounded-full {
+    border-radius: 9999px;
+  }
+
+  .mb-2 {
+    margin-bottom: 8px;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  .span-badge {
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid;
+
+    &.bg-blue-100 {
+      background-color: #dbeafe;
+      color: #1e40af;
+      border-color: #60a5fa;
+    }
+
+    &.bg-green-100 {
+      background-color: #dcfce7;
+      color: #15803d;
+      border-color: #86efac;
+    }
+
+    &.bg-yellow-100 {
+      background-color: #fef3c7;
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .route-dialog {
+    padding: 24px 16px;
+
+    h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    form {
+      gap: 12px;
+
+      .grid {
+        gap: 12px;
+
+        &.sm\:grid-cols-2,
+        &.sm\:grid-cols-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  ::ng-deep .route-dialog-panel {
+    .mat-mdc-dialog-container {
+      max-width: 100% !important;
+      margin: 16px !important;
+    }
+  }
+}

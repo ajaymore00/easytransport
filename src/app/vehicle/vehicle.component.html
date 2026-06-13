@@ -9,12 +9,11 @@
     </div>
 
     <!-- Vehicle List -->
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-    >
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <mat-card *ngFor="let vehicle of vehicles" class="vehicle-card shadow-md hover:shadow-lg transition">
         <mat-card-header class="vehicle-card-header">
-          <div mat-card-avatar class="bg-sky-500 text-white flex items-center justify-center rounded-full w-12 h-12">{{ vehicle.name.charAt(0) }}</div>
+          <div mat-card-avatar class="bg-sky-500 text-white flex items-center justify-center rounded-full w-12 h-12">{{
+            vehicle.name.charAt(0) }}</div>
           <mat-card-title>{{ vehicle.name }}</mat-card-title>
           <mat-card-subtitle>{{ vehicle.type }}</mat-card-subtitle>
         </mat-card-header>
@@ -25,7 +24,7 @@
           <p><strong>Registration No:</strong> {{ vehicle.registrationNo }}</p>
           <p><strong>Year:</strong> {{ vehicle.year }}</p>
           <p><strong>Color:</strong> {{ vehicle.color }}</p>
-          <p><strong>Capacity:</strong> {{ vehicle.capacity }}</p>
+          <p><strong>Capacity( Ton ):</strong> {{ vehicle.capacity }}</p>
           <p><strong>Mileage:</strong> {{ vehicle.mileage }}</p>
           <p><strong>Insurance Expiry:</strong> {{ vehicle.insuranceExpiry | date }}</p>
           <p><strong>Status:</strong> {{ vehicle.status }}</p>
@@ -39,165 +38,98 @@
       </mat-card>
     </div>
 
-    </div>
+  </div>
 
-    <ng-template #vehicleDialog>
-      <h2 mat-dialog-title>{{ editingVehicle ? 'Edit Vehicle' : 'Add Vehicle' }}</h2>
-      <mat-dialog-content>
-        <form (ngSubmit)="saveVehicle()" #vehicleNgForm="ngForm">
-          <div class="grid grid-cols-1 gap-4">
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Vehicle Name</mat-label>
-              <input
-                matInput
-                id="vehicle-name"
-                type="text"
-                [(ngModel)]="vehicleForm.name"
-                name="name"
-                #nameCtrl="ngModel"
-                required
-              />
-              <mat-error *ngIf="nameCtrl.invalid && nameCtrl.touched">Vehicle Name is required</mat-error>
-            </mat-form-field>
+  <ng-template #vehicleDialog>
+    <h2 mat-dialog-title>{{ editingVehicle ? 'Edit Vehicle' : 'Add Vehicle' }}</h2>
+    <mat-dialog-content>
+      <form (ngSubmit)="saveVehicle()" #vehicleNgForm="ngForm">
+        <div class="grid grid-cols-1 gap-4">
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Vehicle Name</mat-label>
+            <input matInput id="vehicle-name" type="text" [(ngModel)]="vehicleForm.name" name="name" #nameCtrl="ngModel"
+              required />
+            <mat-error *ngIf="nameCtrl.invalid && nameCtrl.touched">Vehicle Name is required</mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Model</mat-label>
-              <input
-                matInput
-                id="vehicle-model"
-                type="text"
-                [(ngModel)]="vehicleForm.model"
-                name="model"
-                #modelCtrl="ngModel"
-                required
-              />
-              <mat-error *ngIf="modelCtrl.invalid && modelCtrl.touched">Model is required</mat-error>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Model</mat-label>
+            <input matInput id="vehicle-model" type="text" [(ngModel)]="vehicleForm.model" name="model"
+              #modelCtrl="ngModel" required />
+            <mat-error *ngIf="modelCtrl.invalid && modelCtrl.touched">Model is required</mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Registration Number</mat-label>
-              <input
-                matInput
-                id="vehicle-registration"
-                type="text"
-                [(ngModel)]="vehicleForm.registrationNo"
-                name="registrationNo"
-                #registrationCtrl="ngModel"
-                required
-              />
-              <mat-error *ngIf="registrationCtrl.invalid && registrationCtrl.touched">Registration Number is required</mat-error>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Registration Number</mat-label>
+            <input matInput id="vehicle-registration" type="text" [(ngModel)]="vehicleForm.registrationNo"
+              name="registrationNo" #registrationCtrl="ngModel" required />
+            <mat-error *ngIf="registrationCtrl.invalid && registrationCtrl.touched">Registration Number is
+              required</mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Vehicle Type</mat-label>
-              <mat-select
-                id="vehicle-type"
-                [(ngModel)]="vehicleForm.type"
-                name="type"
-                #typeCtrl="ngModel"
-                required
-              >
-                <mat-option value="Own">Own</mat-option>
-                <mat-option value="Rented">Rented</mat-option>
-              </mat-select>
-              <mat-error *ngIf="typeCtrl.invalid && typeCtrl.touched">Vehicle Type is required</mat-error>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Vehicle Type</mat-label>
+            <mat-select id="vehicle-type" [(ngModel)]="vehicleForm.type" name="type" #typeCtrl="ngModel" required>
+              <mat-option value="Own">Own</mat-option>
+              <mat-option value="Rented">Rented</mat-option>
+            </mat-select>
+            <mat-error *ngIf="typeCtrl.invalid && typeCtrl.touched">Vehicle Type is required</mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Manufacturer</mat-label>
-              <mat-select
-                id="vehicle-manufacturer"
-                [(ngModel)]="vehicleForm.manufacturer"
-                name="manufacturer"
-                #manufacturerCtrl="ngModel"
-                required
-              >
-                <mat-option *ngFor="let make of manufacturers" [value]="make">{{ make }}</mat-option>
-              </mat-select>
-              <mat-error *ngIf="manufacturerCtrl.invalid && manufacturerCtrl.touched">Manufacturer is required</mat-error>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Manufacturer</mat-label>
+            <mat-select id="vehicle-manufacturer" [(ngModel)]="vehicleForm.manufacturer" name="manufacturer"
+              #manufacturerCtrl="ngModel" required>
+              <mat-option *ngFor="let make of manufacturers" [value]="make">{{ make }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="manufacturerCtrl.invalid && manufacturerCtrl.touched">Manufacturer is required</mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Year</mat-label>
-              <mat-select
-                id="vehicle-year"
-                [(ngModel)]="vehicleForm.year"
-                name="year"
-                #yearCtrl="ngModel"
-                required
-              >
-                <mat-option *ngFor="let year of vehicleYears" [value]="year">{{ year }}</mat-option>
-              </mat-select>
-              <mat-error *ngIf="yearCtrl.invalid && yearCtrl.touched">Year is required</mat-error>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Year</mat-label>
+            <mat-select id="vehicle-year" [(ngModel)]="vehicleForm.year" name="year" #yearCtrl="ngModel" required>
+              <mat-option *ngFor="let year of vehicleYears" [value]="year">{{ year }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="yearCtrl.invalid && yearCtrl.touched">Year is required</mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Color</mat-label>
-              <input
-                matInput
-                id="vehicle-color"
-                type="color"
-                [(ngModel)]="vehicleForm.color"
-                name="color"
-                #colorCtrl="ngModel"
-                required
-              />
-              <mat-hint>{{ vehicleForm.color || '#000000' }}</mat-hint>
-              <mat-error *ngIf="colorCtrl.invalid && colorCtrl.touched">Color is required</mat-error>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Color</mat-label>
+            <input matInput id="vehicle-color" type="color" [(ngModel)]="vehicleForm.color" name="color"
+              #colorCtrl="ngModel" required />
+            <mat-hint>{{ vehicleForm.color || '#000000' }}</mat-hint>
+            <mat-error *ngIf="colorCtrl.invalid && colorCtrl.touched">Color is required</mat-error>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Capacity</mat-label>
-              <input
-                matInput
-                id="vehicle-capacity"
-                type="text"
-                [(ngModel)]="vehicleForm.capacity"
-                name="capacity"
-              />
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Capacity ( Ton )</mat-label>
+            <input matInput id="vehicle-capacity" type="text" [(ngModel)]="vehicleForm.capacity" name="capacity" />
+          </mat-form-field>
 
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Mileage</mat-label>
-              <input
-                matInput
-                id="vehicle-mileage"
-                type="text"
-                [(ngModel)]="vehicleForm.mileage"
-                name="mileage"
-              />
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Mileage</mat-label>
+            <input matInput id="vehicle-mileage" type="text" [(ngModel)]="vehicleForm.mileage" name="mileage" />
+          </mat-form-field>
 
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Insurance Expiry</mat-label>
-              <input
-                matInput
-                [matDatepicker]="insurancePicker"
-                id="vehicle-insurance"
-                [(ngModel)]="vehicleForm.insuranceExpiry"
-                name="insuranceExpiry"
-              />
-              <mat-datepicker-toggle matSuffix [for]="insurancePicker"></mat-datepicker-toggle>
-              <mat-datepicker #insurancePicker></mat-datepicker>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Insurance Expiry</mat-label>
+            <input matInput [matDatepicker]="insurancePicker" id="vehicle-insurance"
+              [(ngModel)]="vehicleForm.insuranceExpiry" name="insuranceExpiry" />
+            <mat-datepicker-toggle matSuffix [for]="insurancePicker"></mat-datepicker-toggle>
+            <mat-datepicker #insurancePicker></mat-datepicker>
+          </mat-form-field>
 
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Status</mat-label>
-              <input
-                matInput
-                id="vehicle-status"
-                type="text"
-                [(ngModel)]="vehicleForm.status"
-                name="status"
-              />
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Status</mat-label>
+            <input matInput id="vehicle-status" type="text" [(ngModel)]="vehicleForm.status" name="status" />
+          </mat-form-field>
 
-            <mat-dialog-actions class="vehicle-dialog-actions" align="end">
-              <button mat-button type="button" (click)="closeForm()">Cancel</button>
-              <button mat-raised-button color="primary" type="submit" [disabled]="vehicleNgForm.invalid">Save</button>
-            </mat-dialog-actions>
-          </div>
-        </form>
-      </mat-dialog-content>
-    </ng-template>
+          <mat-dialog-actions class="vehicle-dialog-actions" align="end">
+            <button mat-button type="button" (click)="closeForm()">Cancel</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="vehicleNgForm.invalid">Save</button>
+          </mat-dialog-actions>
+        </div>
+      </form>
+    </mat-dialog-content>
+  </ng-template>
 </div>
