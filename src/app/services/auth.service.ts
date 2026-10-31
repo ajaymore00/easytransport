@@ -39,6 +39,19 @@ export class AuthService {
     return this.http.get(`${this.baseUrl}/auth/me`, { headers });
   }
 
+  updateProfile(payload: {
+    transporterName: string;
+    ownerName: string;
+    email: string;
+    mobileNumber: string;
+    whatsappNumber: string;
+    gstNo: string;
+  }): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
+    return this.http.patch(`${this.baseUrl}/auth/me`, payload, { headers });
+  }
+
   changePassword(payload: any): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };

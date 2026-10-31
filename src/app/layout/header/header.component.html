@@ -18,18 +18,63 @@
     </div>
 
     <div class="app-header__actions">
-      <div class="app-header__profile">
+      <button
+        type="button"
+        class="app-header__profile"
+        (click)="openProfileEditor()"
+        aria-label="Edit your profile"
+        [attr.aria-expanded]="isEditingProfile"
+      >
         <span class="app-header__profile-avatar" aria-hidden="true">{{ userInitials }}</span>
         <span class="app-header__profile-copy">
           <strong>{{ transporterName }}</strong>
           <small>{{ ownerName || 'Transporter account' }}</small>
         </span>
-      </div>
+      </button>
       <span class="app-header__divider" aria-hidden="true"></span>
       <button type="button" class="app-header__logout" (click)="logout()">
         <span class="app-header__logout-icon" aria-hidden="true">↗</span>
         <span>Log out</span>
       </button>
+
+      <form
+        *ngIf="isEditingProfile"
+        class="app-header__profile-editor absolute right-0 top-full z-50 mt-3 grid w-[min(22rem,calc(100vw-1.5rem))] gap-3 rounded-2xl border border-slate-400/20 bg-slate-900 p-4 text-slate-200 shadow-2xl"
+        (ngSubmit)="saveProfile()"
+        #profileForm="ngForm"
+      >
+        <h2 class="m-0 text-base font-bold">Edit profile</h2>
+        <label class="grid gap-1 text-xs text-slate-300">
+          Transporter / company name
+          <input class="min-h-10 w-full rounded-lg border border-slate-400/25 bg-slate-950/90 px-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none" type="text" name="transporterName" [(ngModel)]="profile.transporterName" required>
+        </label>
+        <label class="grid gap-1 text-xs text-slate-300">
+          Owner / contact name
+          <input class="min-h-10 w-full rounded-lg border border-slate-400/25 bg-slate-950/90 px-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none" type="text" name="ownerName" [(ngModel)]="profile.ownerName" required>
+        </label>
+        <label class="grid gap-1 text-xs text-slate-300">
+          Email
+          <input class="min-h-10 w-full rounded-lg border border-slate-400/25 bg-slate-950/90 px-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none" type="email" name="email" [(ngModel)]="profile.email">
+        </label>
+        <label class="grid gap-1 text-xs text-slate-300">
+          Mobile number
+          <input class="min-h-10 w-full rounded-lg border border-slate-400/25 bg-slate-950/90 px-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none" type="tel" name="mobileNumber" [(ngModel)]="profile.mobileNumber" required>
+        </label>
+        <label class="grid gap-1 text-xs text-slate-300">
+          WhatsApp number
+          <input class="min-h-10 w-full rounded-lg border border-slate-400/25 bg-slate-950/90 px-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none" type="tel" name="whatsappNumber" [(ngModel)]="profile.whatsappNumber">
+        </label>
+        <label class="grid gap-1 text-xs text-slate-300">
+          GST number
+          <input class="min-h-10 w-full rounded-lg border border-slate-400/25 bg-slate-950/90 px-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none" type="text" name="gstNo" [(ngModel)]="profile.gstNo">
+        </label>
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" class="app-button app-button--secondary" (click)="cancelProfileEdit()" [disabled]="isSavingProfile">Cancel</button>
+          <button type="submit" class="app-button app-button--primary" [disabled]="profileForm.invalid || isSavingProfile">
+            {{ isSavingProfile ? 'Saving...' : 'Save changes' }}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </header>

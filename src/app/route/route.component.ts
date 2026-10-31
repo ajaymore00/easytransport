@@ -13,6 +13,29 @@ import { DashboardService } from '../services/dashboard.service';
 import {MatTimepickerModule} from '@angular/material/timepicker';
 import { ConfirmationService } from '../services/confirmation.service';
 
+interface RouteCheckpoint {
+  name: string;
+  reached: boolean;
+  driverStatus?: string;
+  updatedOn?: string;
+  remarks?: string;
+}
+
+interface RouteRecord {
+  id: string | number;
+  routeName?: string;
+  status?: string;
+  startLocation?: string;
+  endLocation?: string;
+  date?: string | Date;
+  startTime?: string | Date;
+  endTime?: string | Date;
+  driverName?: string;
+  vehicleNumber?: string;
+  progress?: number;
+  checkpoints: RouteCheckpoint[];
+}
+
 @Component({
   selector: 'app-route',
   standalone: true,
@@ -35,7 +58,7 @@ import { ConfirmationService } from '../services/confirmation.service';
 export class RouteComponent implements OnInit {
   @ViewChild('routeDialog') routeDialog!: TemplateRef<any>;
 
-  routes: any[] = [];
+  routes: RouteRecord[] = [];
 
   routeForm: FormGroup;
   editMode = false;
@@ -64,7 +87,7 @@ export class RouteComponent implements OnInit {
     this.loadRoutes();
   }
 
-  normalizeRoute(route: any) {
+  normalizeRoute(route: any): RouteRecord {
     return {
       ...route,
       id: route._id || route.id,

@@ -72,7 +72,8 @@
               "buildTarget": "transport:build:production"
             },
             "development": {
-              "buildTarget": "transport:build:development"
+              "buildTarget": "transport:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

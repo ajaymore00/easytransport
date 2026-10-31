@@ -90,6 +90,7 @@
 }
 
 .app-header__actions {
+  position: relative;
   display: flex;
   flex: 0 0 auto;
   align-items: center;
@@ -98,8 +99,27 @@
 
 .app-header__profile {
   display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
   align-items: center;
   gap: 0.625rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.app-header__profile:focus-visible {
+  border-radius: 0.5rem;
+  outline: 2px solid #22d3ee;
+  outline-offset: 4px;
+}
+
+.app-header__profile-editor {
+  position: absolute;
+  z-index: 50;
+  top: 100%;
+  right: 0;
 }
 
 .app-header__profile-avatar {
