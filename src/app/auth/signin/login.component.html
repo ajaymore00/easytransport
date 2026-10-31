@@ -1,32 +1,36 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4">
-  <div class="flex flex-col md:flex-row bg-white/10 backdrop-blur-xl text-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl">
+<div class="auth-page">
+  <div class="auth-card">
 
-    <!-- Left side (banner) -->
-    <div class="hidden md:flex md:w-1/2 bg-gradient-to-tr from-indigo-600 via-blue-600 to-cyan-500 items-center justify-center p-8">
-      <div class="text-center">
-        <h2 class="text-4xl font-bold mb-4 animate-bounce">🚚 Transport Portal</h2>
-        <p class="text-sm text-white/80">Manage your logistics faster and smarter with our platform.</p>
+    <div class="auth-brand">
+      <div class="auth-brand__content">
+        <h2>🚚 Transport Portal</h2>
+        <p>Manage your logistics faster and smarter with our platform.</p>
       </div>
     </div>
 
-    <!-- Right side (form) -->
-    <div class="w-full md:w-1/2 p-8 md:p-12">
-      <h2 class="text-3xl font-semibold mb-6 text-center md:text-left">Welcome Back 👋</h2>
+    <div class="auth-content">
+      <div class="auth-heading">
+        <span class="auth-kicker">Your workspace awaits</span>
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-subtitle">Sign in to manage your transport business.</p>
+      </div>
 
-      <form (ngSubmit)="login()" class="space-y-6">
-        <div>
+      <form (ngSubmit)="login()" class="auth-form">
+        <div class="auth-field">
           <label>Mobile Number</label>
           <input type="tel" [(ngModel)]="mobileNumber" name="mobileNumber" required
-            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none border border-white/30">
+            autocomplete="tel" inputmode="numeric" minlength="10" maxlength="10" pattern="[0-9]{10}"
+            title="Enter a 10-digit mobile number" placeholder="Enter your 10-digit mobile number">
         </div>
 
-        <div>
+        <div class="auth-field">
           <label>Password</label>
-          <div class="relative">
+          <div class="auth-input-wrap">
             <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required
-              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none border border-white/30">
+              autocomplete="current-password" placeholder="Enter your password">
             <button type="button" (click)="togglePassword()"
-              class="app-icon-button app-icon-button--quiet app-icon-button--small absolute right-3 top-2.5">
+              class="app-icon-button app-icon-button--quiet app-icon-button--small auth-password-toggle"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
               <i class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</i>
             </button>
           </div>
@@ -36,11 +40,9 @@
           {{ isLoading ? 'Logging in...' : 'Login' }}
         </button>
 
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-2 text-sm mt-4">
-         
-          <a (click)="routeTo('/auth/forgot-password')" >Forgot password?</a>
-          <a (click)="routeTo('/auth/signup')" >Create account</a>
-
+        <div class="auth-links">
+          <a (click)="routeTo('/auth/forgot-password')">Forgot password?</a>
+          <a (click)="routeTo('/auth/signup')">Create account</a>
         </div>
       </form>
     </div>

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
+import { isValidMobileNumber } from '../auth-validation';
 
 @Component({
   selector: 'app-forgot-password',
@@ -38,8 +39,8 @@ export class ForgotPasswordComponent {
   ) { }
 
   requestReset() {
-    if (!this.mobileNumber) {
-      this.notifications.error('Please enter your mobile number.');
+    if (!isValidMobileNumber(this.mobileNumber)) {
+      this.notifications.error('Please enter a valid 10-digit mobile number.');
       return;
     }
     this.isLoading = true;
@@ -58,6 +59,11 @@ export class ForgotPasswordComponent {
   }
 
   verifyReset() {
+    if (!isValidMobileNumber(this.mobileNumber)) {
+      this.notifications.error('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
     if (!this.otp || !this.password || !this.confirmPassword) {
       this.notifications.error('Please fill all fields.');
       return;
@@ -83,8 +89,8 @@ export class ForgotPasswordComponent {
   }
 
   resendOtp() {
-    if (!this.mobileNumber) {
-      this.notifications.error('Please enter your mobile number to resend OTP.');
+    if (!isValidMobileNumber(this.mobileNumber)) {
+      this.notifications.error('Please enter a valid 10-digit mobile number to resend OTP.');
       return;
     }
     this.isLoading = true;

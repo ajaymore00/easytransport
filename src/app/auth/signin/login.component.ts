@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
+import { isValidMobileNumber } from '../auth-validation';
 
 @Component({
   selector: 'app-login',
@@ -29,8 +30,13 @@ export class LoginComponent {
   }
 
   login() {
-    if (!this.mobileNumber || !this.password) {
-      this.notifications.error('Please enter your mobile number and password.');
+    if (!isValidMobileNumber(this.mobileNumber)) {
+      this.notifications.error('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    if (!this.password) {
+      this.notifications.error('Please enter your password.');
       return;
     }
 

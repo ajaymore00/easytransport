@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
+import { isValidMobileNumber } from '../auth-validation';
 
 @Component({
   selector: 'app-signup',
@@ -41,18 +42,43 @@ export class SignupComponent {
     private notifications: NotificationService,
   ) {}
 
-  signup() {
+  signup(form: NgForm) {
+    form.form.markAllAsTouched();
+
+    const transporterName = this.transporterName.trim();
+    const ownerName = this.ownerName.trim();
+
+    if (transporterName.length < 2 || ownerName.length < 2) {
+      this.notifications.error('Company and contact names must be at least 2 characters.');
+      return;
+    }
+
+    if (!isValidMobileNumber(this.mobileNumber)) {
+      this.notifications.error('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    if (this.whatsappNumber && !isValidMobileNumber(this.whatsappNumber)) {
+      this.notifications.error('WhatsApp number must contain exactly 10 digits.');
+      return;
+    }
+
+    if (form.invalid) {
+      this.notifications.error('Please correct the highlighted fields.');
+      return;
+    }
+
     if (this.password !== this.confirmPassword) {
       this.notifications.error('Passwords do not match.');
       return;
     }
 
     const payload = {
-      transporterName: this.transporterName,
-      ownerName: this.ownerName,
-      whatsappNumber: this.whatsappNumber,
-      email: this.email,
-      gstNo: this.gstNo,
+      transporterName,
+      ownerName,
+      whatsappNumber: this.whatsappNumber.trim(),
+      email: this.email.trim(),
+      gstNo: this.gstNo.trim().toUpperCase(),
       mobileNumber: this.mobileNumber,
       password: this.password,
       confirmPassword: this.confirmPassword,
@@ -73,8 +99,13 @@ export class SignupComponent {
   }
 
   verifyOtp() {
-    if (!this.mobileNumber || !this.otp) {
-      this.notifications.error('Please enter your mobile number and OTP.');
+    if (!isValidMobileNumber(this.mobileNumber)) {
+      this.notifications.error('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    if (!this.otp) {
+      this.notifications.error('Please enter the OTP.');
       return;
     }
     this.isLoading = true;
@@ -93,8 +124,8 @@ export class SignupComponent {
   }
 
   resendOtp() {
-    if (!this.mobileNumber) {
-      this.notifications.error('Please enter your mobile number to resend OTP.');
+    if (!isValidMobileNumber(this.mobileNumber)) {
+      this.notifications.error('Please enter a valid 10-digit mobile number to resend OTP.');
       return;
     }
     this.isLoading = true;

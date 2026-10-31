@@ -1,81 +1,122 @@
-<div
-  class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4">
-  <div
-    class="flex flex-col md:flex-row bg-white/10 backdrop-blur-xl text-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl">
+<div class="auth-page">
+  <div class="auth-card">
 
-    <!-- Left section -->
-    <div class="hidden md:flex md:w-1/2 bg-gradient-to-tr from-indigo-600 via-blue-600 to-cyan-500 items-center justify-center p-8">
-      <div class="text-center">
-        <h2 class="text-4xl font-bold mb-4 animate-bounce">🚛 Join Transport Portal</h2>
-        <p class="text-sm text-white/80">Sign up and manage your transport business easily.</p>
+    <div class="auth-brand">
+      <div class="auth-brand__content">
+        <h2>🚛 Join Transport Portal</h2>
+        <p>Sign up and manage your transport business easily.</p>
       </div>
     </div>
 
-    <!-- Right section (form) -->
-    <div class="w-full md:w-1/2 p-8 md:p-12">
-      <h2 class="text-3xl font-semibold mb-6 text-center md:text-left">Create an Account 📝</h2>
+    <div class="auth-content">
+      <div class="auth-heading">
+        <span class="auth-kicker">Get started today</span>
+        <h2 class="auth-title">Create an account</h2>
+        <p class="auth-subtitle">Set up your profile to bring your transport operations together.</p>
+      </div>
 
-      <form *ngIf="step === 1" (ngSubmit)="signup()" class="space-y-4">
-        <div>
-          <label>Transporter / Company Name</label>
-          <input type="text" [(ngModel)]="transporterName" name="transporterName" required
-            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+      <form *ngIf="step === 1" #signupForm="ngForm" (ngSubmit)="signup(signupForm)" class="auth-form" novalidate>
+        <div class="auth-field">
+          <label>Transporter / Company Name <span class="auth-required" aria-hidden="true">*</span></label>
+          <input #transporterNameInput="ngModel" type="text" [(ngModel)]="transporterName" name="transporterName"
+            required minlength="2" maxlength="120"
+            autocomplete="organization" placeholder="Company name">
+          <span *ngIf="transporterNameInput.touched && transporterName.trim().length < 2" class="auth-error" role="alert">
+            Enter a company name with at least 2 characters.
+          </span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label>Owner / Contact Name</label>
-            <input type="text" [(ngModel)]="ownerName" name="ownerName" required
-              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+        <div class="auth-grid">
+          <div class="auth-field">
+            <label>Owner / Contact Name <span class="auth-required" aria-hidden="true">*</span></label>
+            <input #ownerNameInput="ngModel" type="text" [(ngModel)]="ownerName" name="ownerName"
+              required minlength="2" maxlength="100"
+              autocomplete="name" placeholder="Full name">
+            <span *ngIf="ownerNameInput.touched && ownerName.trim().length < 2" class="auth-error" role="alert">
+              Enter a contact name with at least 2 characters.
+            </span>
           </div>
-          <div>
+          <div class="auth-field">
             <label>GST Number (optional)</label>
-            <input type="text" [(ngModel)]="gstNo" name="gstNo"
-              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+            <input #gstInput="ngModel" type="text" [(ngModel)]="gstNo" name="gstNo"
+              pattern="^[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z][1-9A-Za-z]Z[0-9A-Za-z]$" maxlength="15"
+              autocapitalize="characters" placeholder="e.g. 27AAPFU0939F1ZV"
+              title="Enter a valid 15-character GSTIN">
+            <span *ngIf="gstInput.touched && gstInput.errors?.['pattern']" class="auth-error" role="alert">
+              Enter a valid 15-character GSTIN.
+            </span>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label>Mobile Number</label>
+        <div class="auth-grid">
+          <div class="auth-field">
+            <label>Mobile Number <span class="auth-required" aria-hidden="true">*</span></label>
             <input type="tel" [(ngModel)]="mobileNumber" name="mobileNumber" required
-              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+              autocomplete="tel" inputmode="numeric" minlength="10" maxlength="10" pattern="[0-9]{10}"
+              title="Enter a 10-digit mobile number" placeholder="10-digit mobile number">
           </div>
-          <div>
+          <div class="auth-field">
             <label>WhatsApp Number</label>
-            <input type="tel" [(ngModel)]="whatsappNumber" name="whatsappNumber"
-              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+            <input #whatsappInput="ngModel" type="tel" [(ngModel)]="whatsappNumber" name="whatsappNumber"
+              autocomplete="tel" inputmode="numeric" minlength="10" maxlength="10" pattern="[0-9]{10}"
+              placeholder="Optional, 10 digits">
+            <span *ngIf="whatsappInput.touched && whatsappInput.invalid" class="auth-error" role="alert">
+              Enter exactly 10 digits.
+            </span>
           </div>
         </div>
 
-        <div>
-          <label>Email</label>
-          <input type="email" [(ngModel)]="email" name="email"
-            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+        <div class="auth-field">
+          <label>Email <span class="auth-required" aria-hidden="true">*</span></label>
+          <input #emailInput="ngModel" type="email" [(ngModel)]="email" name="email"
+            required maxlength="254"
+            pattern="^[A-Za-z0-9]+([._%+-][A-Za-z0-9]+)*@([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$"
+            autocomplete="email" placeholder="name@company.com">
+          <span *ngIf="emailInput.touched && emailInput.errors?.['required']" class="auth-error" role="alert">
+            Email is required.
+          </span>
+          <span *ngIf="emailInput.touched && (emailInput.errors?.['email'] || emailInput.errors?.['pattern'])"
+            class="auth-error" role="alert">
+            Enter a valid email address, such as name&#64;company.com.
+          </span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label>Password</label>
-            <div class="relative">
-              <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required
-                class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+        <div class="auth-grid">
+          <div class="auth-field">
+            <label>Password <span class="auth-required" aria-hidden="true">*</span></label>
+            <div class="auth-input-wrap">
+              <input #passwordInput="ngModel" [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="password" name="password" required minlength="8" maxlength="128"
+                autocomplete="new-password" placeholder="Create a password">
               <button type="button" (click)="togglePassword()"
-                class="app-icon-button app-icon-button--quiet app-icon-button--small absolute right-3 top-2.5">
+                class="app-icon-button app-icon-button--quiet app-icon-button--small auth-password-toggle"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
                 <i class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</i>
               </button>
             </div>
+            <span *ngIf="passwordInput.touched && passwordInput.errors?.['required']" class="auth-error" role="alert">
+              Password is required.
+            </span>
+            <span *ngIf="passwordInput.touched && passwordInput.errors?.['minlength']" class="auth-error" role="alert">
+              Use at least 8 characters.
+            </span>
           </div>
-          <div>
-            <label>Confirm Password</label>
-            <div class="relative">
-              <input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword" name="confirmPassword" required
-                class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+          <div class="auth-field">
+            <label>Confirm Password <span class="auth-required" aria-hidden="true">*</span></label>
+            <div class="auth-input-wrap">
+              <input #confirmPasswordInput="ngModel" [type]="showConfirmPassword ? 'text' : 'password'"
+                [(ngModel)]="confirmPassword" name="confirmPassword" required
+                autocomplete="new-password" placeholder="Confirm your password">
               <button type="button" (click)="toggleConfirmPassword()"
-                class="app-icon-button app-icon-button--quiet app-icon-button--small absolute right-3 top-2.5">
+                class="app-icon-button app-icon-button--quiet app-icon-button--small auth-password-toggle"
+                [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'">
                 <i class="material-icons">{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</i>
               </button>
             </div>
+            <span *ngIf="confirmPasswordInput.touched && confirmPasswordInput.errors?.['required']"
+              class="auth-error" role="alert">Please confirm your password.</span>
+            <span *ngIf="confirmPasswordInput.touched && confirmPassword && confirmPassword !== password"
+              class="auth-error" role="alert">Passwords do not match.</span>
           </div>
         </div>
 
@@ -83,26 +124,26 @@
           {{ isLoading ? 'Creating...' : 'Sign Up' }}
         </button>
 
-        <div class="text-center text-sm mt-4">
+        <div class="auth-footer">
           Already have an account?
-          <a (click)="routeTo('/auth/login')" class="font-semibold">Login</a>
+          <a (click)="routeTo('/auth/login')">Login</a>
         </div>
       </form>
 
-      <form *ngIf="step === 2" (ngSubmit)="verifyOtp()" class="space-y-4">
-        <div>
+      <form *ngIf="step === 2" (ngSubmit)="verifyOtp()" class="auth-form">
+        <div class="auth-field">
           <label>Mobile Number</label>
           <input type="tel" readonly [(ngModel)]="mobileNumber" name="mobileNumber" 
-            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+            autocomplete="tel">
         </div>
 
-        <div>
+        <div class="auth-field">
           <label>OTP</label>
           <input type="text" [(ngModel)]="otp" name="otp" required
-            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+            inputmode="numeric" autocomplete="one-time-code" placeholder="Enter verification code">
         </div>
 
-        <div class="flex gap-3">
+        <div class="auth-grid">
           <button type="submit" [disabled]="isLoading" class="app-button app-button--primary flex-1">
             {{ isLoading ? 'Verifying...' : 'Verify OTP' }}
           </button>
@@ -112,8 +153,8 @@
           </button>
         </div>
 
-        <div class="text-center text-sm mt-4">
-          <a (click)="step = 1" class="font-semibold">Edit details</a>
+        <div class="auth-footer">
+          <a (click)="step = 1">Edit details</a>
         </div>
       </form>
     </div>
