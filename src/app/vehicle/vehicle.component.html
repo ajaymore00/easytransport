@@ -1,9 +1,9 @@
-<div class="p-4 md:p-6 bg-gradient-to-br from-blue-500 via-cyan-500 to-sky-400 min-h-screen">
+<div class="p-4 md:p-6 text-white">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
       <h2 class="text-2xl font-bold text-white mb-3 md:mb-0">Manage Vehicles</h2>
-      <button mat-flat-button color="primary" class="vehicle-add-button" (click)="openForm()">
+      <button mat-flat-button color="primary" class="vehicle-add-button shadow-md" (click)="openForm()">
         + Add Vehicle
       </button>
     </div>
@@ -12,13 +12,13 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <mat-card *ngFor="let vehicle of vehicles" class="vehicle-card shadow-md hover:shadow-lg transition">
         <mat-card-header class="vehicle-card-header">
-          <div mat-card-avatar class="bg-sky-500 text-white flex items-center justify-center rounded-full w-12 h-12">{{
+          <div mat-card-avatar class="bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center rounded-full w-12 h-12">{{
             vehicle.name.charAt(0) }}</div>
           <mat-card-title>{{ vehicle.name }}</mat-card-title>
           <mat-card-subtitle>{{ vehicle.type }}</mat-card-subtitle>
         </mat-card-header>
 
-        <mat-card-content class="text-sm text-slate-700">
+        <mat-card-content class="text-sm text-slate-300">
           <p><strong>Manufacturer:</strong> {{ vehicle.manufacturer }}</p>
           <p><strong>Model:</strong> {{ vehicle.model }}</p>
           <p><strong>Registration No:</strong> {{ vehicle.registrationNo }}</p>

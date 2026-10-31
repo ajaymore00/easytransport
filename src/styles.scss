@@ -5,11 +5,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Material form field styling for better visibility on light modal backgrounds */
+/* Material form field styling for dark/glass backgrounds */
 .mat-form-field-appearance-fill .mat-form-field-flex,
 .mat-form-field-appearance-outline .mat-form-field-flex {
-  background-color: rgba(248, 250, 252, 0.95);
-  border: 1px solid rgba(148, 163, 184, 0.35);
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 0.75rem;
 }
 .mat-form-field-appearance-fill .mat-form-field-infix,
@@ -18,41 +18,42 @@
 }
 .mat-form-field.mat-focused .mat-form-field-flex,
 .mat-form-field:hover .mat-form-field-flex {
-  border-color: rgba(59, 130, 246, 0.85);
+  border-color: rgba(6, 182, 212, 0.8) !important; /* cyan-500 hover border */
 }
 .mat-form-field .mat-form-field-label {
-  color: rgba(30, 41, 59, 0.9);
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 .mat-form-field .mat-input-element,
-.mat-form-field .mat-select-trigger {
-  color: #111827;
+.mat-form-field .mat-select-trigger,
+.mat-form-field .mat-mdc-select-value {
+  color: #ffffff !important;
 }
 .mat-form-field .mat-error {
-  color: #dc2626;
+  color: #f87171 !important; /* red-400 */
 }
 .mat-form-field .mat-form-field-flex.mat-focused .mat-form-field-label {
-  color: rgba(37, 99, 235, 1);
+  color: rgba(6, 182, 212, 1) !important; /* cyan-500 label */
 }
 
 /* Material card + dialog theme overrides */
 .vehicle-card {
-  background: linear-gradient(180deg, rgba(236, 246, 255, 0.98), rgba(255, 255, 255, 0.96));
-  border: 1px solid rgba(14, 165, 233, 0.16);
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 1rem;
-  box-shadow: 0 18px 40px rgba(14, 165, 233, 0.12);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3) !important;
 }
 .vehicle-card-header {
-  background: rgba(56, 189, 248, 0.12);
-  border-bottom: 1px solid rgba(56, 189, 248, 0.18);
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 1rem 1rem 0 0;
   padding: 1rem 1.25rem;
 }
 .vehicle-card .mat-card-title {
-  color: #0c4a6e;
+  color: #ffffff !important;
   font-weight: 700;
 }
 .vehicle-card .mat-card-subtitle {
-  color: #075985;
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 .vehicle-card-content p {
   margin: 0.45rem 0;
@@ -68,41 +69,93 @@
   background-color: #0284c7 !important;
 }
 .vehicle-card-actions .mat-stroked-button[color="primary"] {
-  border-color: #0ea5e9;
-  color: #0ea5e9;
+  border-color: rgba(14, 165, 233, 0.4) !important;
+  color: #38bdf8 !important;
 }
 .vehicle-card-actions .mat-stroked-button[color="warn"] {
-  border-color: #ef4444;
-  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  color: #f87171 !important;
 }
-.vehicle-dialog-panel .mat-dialog-container {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 245, 249, 0.98));
-  border: 1px solid rgba(56, 189, 248, 0.14);
+.vehicle-dialog-panel .mat-dialog-container,
+.route-dialog-panel .mat-dialog-container {
+  background: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 1.5rem;
-  box-shadow: 0 40px 90px rgba(15, 23, 42, 0.16);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.5) !important;
 }
-.vehicle-dialog-panel .mat-dialog-title {
-  color: #0f172a;
+.vehicle-dialog-panel .mat-dialog-title,
+.route-dialog-panel .mat-dialog-title {
+  color: #ffffff !important;
   font-weight: 800;
   padding: 1.5rem 1.5rem 0.5rem;
 }
-.vehicle-dialog-panel .mat-dialog-content {
+.vehicle-dialog-panel .mat-dialog-content,
+.route-dialog-panel .mat-dialog-content {
   padding: 1.5rem 1.5rem 0;
-  color: #0f172a;
+  color: #ffffff !important;
 }
-.vehicle-dialog-actions {
+.vehicle-dialog-actions,
+.route-dialog-actions {
   padding: 1rem 1.5rem 1.5rem;
   justify-content: flex-end;
 }
-.vehicle-dialog-actions .mat-raised-button.mat-primary {
-  background-color: #0ea5e9;
-  color: white;
+.vehicle-dialog-actions .mat-raised-button.mat-primary,
+.route-dialog-actions .mat-raised-button.mat-primary {
+  background-color: #0ea5e9 !important;
+  color: white !important;
 }
-.vehicle-dialog-actions .mat-raised-button.mat-primary:hover {
-  background-color: #0284c7;
+.vehicle-dialog-actions .mat-raised-button.mat-primary:hover,
+.route-dialog-actions .mat-raised-button.mat-primary:hover {
+  background-color: #0284c7 !important;
 }
-.vehicle-dialog-actions .mat-button {
-  color: #0f172a;
+.vehicle-dialog-actions .mat-button,
+.route-dialog-actions .mat-button {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Calendar / Datepicker dark mode styling */
+.mat-datepicker-content {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.mat-calendar-body-cell-content {
+  color: #ffffff !important;
+}
+.mat-calendar-body-cell-content:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+.mat-calendar-body-selected {
+  background-color: #0ea5e9 !important;
+  color: white !important;
+}
+.mat-calendar-arrow {
+  fill: #ffffff !important;
+}
+.mat-calendar-table-header,
+.mat-calendar-body-label {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.mat-calendar-next-button,
+.mat-calendar-previous-button {
+  color: #ffffff !important;
+}
+
+/* Select dropdown overlay dark mode styling */
+.mat-mdc-select-panel {
+  background-color: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.mat-mdc-option {
+  color: #ffffff !important;
+}
+.mat-mdc-option:hover,
+.mat-mdc-option.mat-mdc-option-active {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+.mat-mdc-form-field .mat-datepicker-toggle,
+.mat-mdc-form-field .mat-icon {
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 header {
