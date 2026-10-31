@@ -13,6 +13,7 @@
         <span class="auth-kicker">Get started today</span>
         <h2 class="auth-title">Create an account</h2>
         <p class="auth-subtitle">Set up your profile to bring your transport operations together.</p>
+        <p class="auth-required-note"><span class="auth-required" aria-hidden="true">*</span> Required fields</p>
       </div>
 
       <form *ngIf="step === 1" #signupForm="ngForm" (ngSubmit)="signup(signupForm)" class="auth-form" novalidate>
@@ -20,7 +21,8 @@
           <label>Transporter / Company Name <span class="auth-required" aria-hidden="true">*</span></label>
           <input #transporterNameInput="ngModel" type="text" [(ngModel)]="transporterName" name="transporterName"
             required minlength="2" maxlength="120"
-            autocomplete="organization" placeholder="Company name">
+            autocomplete="organization" placeholder="Company name"
+            [attr.aria-invalid]="transporterNameInput.touched && transporterName.trim().length < 2 ? 'true' : null">
           <span *ngIf="transporterNameInput.touched && transporterName.trim().length < 2" class="auth-error" role="alert">
             Enter a company name with at least 2 characters.
           </span>
@@ -31,7 +33,8 @@
             <label>Owner / Contact Name <span class="auth-required" aria-hidden="true">*</span></label>
             <input #ownerNameInput="ngModel" type="text" [(ngModel)]="ownerName" name="ownerName"
               required minlength="2" maxlength="100"
-              autocomplete="name" placeholder="Full name">
+              autocomplete="name" placeholder="Full name"
+              [attr.aria-invalid]="ownerNameInput.touched && ownerName.trim().length < 2 ? 'true' : null">
             <span *ngIf="ownerNameInput.touched && ownerName.trim().length < 2" class="auth-error" role="alert">
               Enter a contact name with at least 2 characters.
             </span>
@@ -41,7 +44,8 @@
             <input #gstInput="ngModel" type="text" [(ngModel)]="gstNo" name="gstNo"
               pattern="^[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z][1-9A-Za-z]Z[0-9A-Za-z]$" maxlength="15"
               autocapitalize="characters" placeholder="e.g. 27AAPFU0939F1ZV"
-              title="Enter a valid 15-character GSTIN">
+              title="Enter a valid 15-character GSTIN"
+              [attr.aria-invalid]="gstInput.touched && gstInput.invalid ? 'true' : null">
             <span *ngIf="gstInput.touched && gstInput.errors?.['pattern']" class="auth-error" role="alert">
               Enter a valid 15-character GSTIN.
             </span>
@@ -51,15 +55,22 @@
         <div class="auth-grid">
           <div class="auth-field">
             <label>Mobile Number <span class="auth-required" aria-hidden="true">*</span></label>
-            <input type="tel" [(ngModel)]="mobileNumber" name="mobileNumber" required
+            <input #mobileInput="ngModel" type="tel" [(ngModel)]="mobileNumber" name="mobileNumber" required
               autocomplete="tel" inputmode="numeric" minlength="10" maxlength="10" pattern="[0-9]{10}"
-              title="Enter a 10-digit mobile number" placeholder="10-digit mobile number">
+              title="Enter a 10-digit mobile number" placeholder="10-digit mobile number"
+              [attr.aria-invalid]="mobileInput.touched && mobileInput.invalid ? 'true' : null"
+              [attr.aria-describedby]="mobileInput.touched && mobileInput.invalid ? 'signup-mobile-error' : null">
+            <span *ngIf="mobileInput.touched && mobileInput.invalid" id="signup-mobile-error"
+              class="auth-error" role="alert">
+              Enter a valid 10-digit mobile number.
+            </span>
           </div>
           <div class="auth-field">
             <label>WhatsApp Number</label>
             <input #whatsappInput="ngModel" type="tel" [(ngModel)]="whatsappNumber" name="whatsappNumber"
               autocomplete="tel" inputmode="numeric" minlength="10" maxlength="10" pattern="[0-9]{10}"
-              placeholder="Optional, 10 digits">
+              placeholder="Optional, 10 digits"
+              [attr.aria-invalid]="whatsappInput.touched && whatsappInput.invalid ? 'true' : null">
             <span *ngIf="whatsappInput.touched && whatsappInput.invalid" class="auth-error" role="alert">
               Enter exactly 10 digits.
             </span>
@@ -71,7 +82,8 @@
           <input #emailInput="ngModel" type="email" [(ngModel)]="email" name="email"
             required maxlength="254"
             pattern="^[A-Za-z0-9]+([._%+-][A-Za-z0-9]+)*@([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$"
-            autocomplete="email" placeholder="name@company.com">
+            autocomplete="email" placeholder="name@company.com"
+            [attr.aria-invalid]="emailInput.touched && emailInput.invalid ? 'true' : null">
           <span *ngIf="emailInput.touched && emailInput.errors?.['required']" class="auth-error" role="alert">
             Email is required.
           </span>
@@ -87,7 +99,8 @@
             <div class="auth-input-wrap">
               <input #passwordInput="ngModel" [type]="showPassword ? 'text' : 'password'"
                 [(ngModel)]="password" name="password" required minlength="8" maxlength="128"
-                autocomplete="new-password" placeholder="Create a password">
+                autocomplete="new-password" placeholder="Create a password"
+                [attr.aria-invalid]="passwordInput.touched && passwordInput.invalid ? 'true' : null">
               <button type="button" (click)="togglePassword()"
                 class="app-icon-button app-icon-button--quiet app-icon-button--small auth-password-toggle"
                 [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
@@ -106,7 +119,9 @@
             <div class="auth-input-wrap">
               <input #confirmPasswordInput="ngModel" [type]="showConfirmPassword ? 'text' : 'password'"
                 [(ngModel)]="confirmPassword" name="confirmPassword" required
-                autocomplete="new-password" placeholder="Confirm your password">
+                autocomplete="new-password" placeholder="Confirm your password"
+                [attr.aria-invalid]="confirmPasswordInput.touched &&
+                  (confirmPasswordInput.invalid || (!!confirmPassword && confirmPassword !== password)) ? 'true' : null">
               <button type="button" (click)="toggleConfirmPassword()"
                 class="app-icon-button app-icon-button--quiet app-icon-button--small auth-password-toggle"
                 [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'">

@@ -1,3 +1,5 @@
+@use "./app/auth/auth-page" as auth;
+
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 
 /* You can add global styles to this file, and also import other style files */
@@ -1322,6 +1324,8 @@ mat-card.management-card {
 .mat-mdc-form-field .mat-icon {
   color: #a5f3fc !important;
 }
+
+@include auth.styles;
 
 header {
   transition: all 0.3s ease-in-out;

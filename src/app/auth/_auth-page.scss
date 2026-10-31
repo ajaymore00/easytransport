@@ -1,5 +1,7 @@
 @mixin styles {
-  :host {
+  app-login,
+  app-signup,
+  app-forgot-password {
     display: block;
     min-height: 100vh;
     color: #f8fafc;
@@ -10,7 +12,8 @@
     display: grid;
     min-height: 100vh;
     place-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     isolation: isolate;
     padding: clamp(1rem, 3vw, 2.5rem);
     background:
@@ -74,6 +77,12 @@
 
   .auth-heading {
     margin-bottom: 2rem;
+  }
+
+  .auth-required-note {
+    margin: 0.75rem 0 0;
+    color: #94a3b8;
+    font-size: 0.75rem;
   }
 
   .auth-kicker {
@@ -151,6 +160,14 @@
     box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.13);
   }
 
+  .auth-field input[aria-invalid="true"] {
+    border-color: rgba(248, 113, 113, 0.8);
+  }
+
+  .auth-field input[aria-invalid="true"]:focus {
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.14);
+  }
+
   .auth-field input:-webkit-autofill,
   .auth-field input:autofill {
     -webkit-text-fill-color: #f8fafc;
@@ -210,6 +227,13 @@
     color: #cffafe;
     text-decoration: underline;
     text-underline-offset: 3px;
+  }
+
+  .auth-links a:focus-visible,
+  .auth-footer a:focus-visible {
+    border-radius: 0.2rem;
+    outline: 2px solid #22d3ee;
+    outline-offset: 3px;
   }
 
   .auth-message {
