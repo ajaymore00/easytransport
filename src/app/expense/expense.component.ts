@@ -49,7 +49,7 @@ export class ExpenseComponent implements OnInit {
   expenseForm: any = {
     type: '',
     amount: 0,
-    date: new Date().toISOString().slice(0, 10),
+    date: new Date(),
     description: '',
   };
 
@@ -75,7 +75,7 @@ export class ExpenseComponent implements OnInit {
     this.expenseForm = {
       type: '',
       amount: 0,
-      date: new Date().toISOString().slice(0, 10),
+      date: new Date(),
       description: '',
     };
 
@@ -87,10 +87,16 @@ export class ExpenseComponent implements OnInit {
     });
     ref.afterClosed().subscribe((result) => {
       if (result) {
+        const date = this.formatExpenseDate(result.date);
+        if (!date) {
+          console.error('Cannot create expense: invalid date.');
+          return;
+        }
+
         const payload = {
           type: result.type || '',
           amount: result.amount || 0,
-          date: result.date || new Date().toISOString().slice(0, 10),
+          date,
           description: result.description || '',
         };
 
@@ -117,7 +123,7 @@ export class ExpenseComponent implements OnInit {
 
   editExpense(expense: Expense) {
     this.editingExpense = expense;
-    this.expenseForm = { ...expense };
+    this.expenseForm = { ...expense, date: this.parseExpenseDate(expense.date) };
 
     const ref = this.dialog.open(this.expenseDialog, {
       width: '720px',
@@ -128,17 +134,54 @@ export class ExpenseComponent implements OnInit {
     ref.afterClosed().subscribe((result) => {
       if (result) {
         const id = expense._id || expense.id;
-        if (!id) {
-          Object.assign(expense, result);
+        const date = this.formatExpenseDate(result.date);
+        if (!date) {
+          console.error('Cannot update expense: invalid date.');
           return;
         }
 
-        this.dashboardService.updateData('expenses', String(id), result).subscribe({
+        const payload = { ...result, date };
+        if (!id) {
+          Object.assign(expense, payload);
+          return;
+        }
+
+        this.dashboardService.updateData('expenses', String(id), payload).subscribe({
           next: (updated: any) => Object.assign(expense, updated),
           error: (err: any) => console.error('Update expense failed', err),
         });
       }
     });
+  }
+
+  private parseExpenseDate(value: string | Date | null | undefined): Date | null {
+    if (value instanceof Date) {
+      return Number.isNaN(value.getTime()) ? null : value;
+    }
+
+    if (!value) return null;
+
+    const datePart = value.match(/^(\d{4})-(\d{2})-(\d{2})/)?.slice(1);
+    if (datePart) {
+      const [year, month, day] = datePart.map(Number);
+      const date = new Date(year, month - 1, day);
+      return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
+        ? date
+        : null;
+    }
+
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  private formatExpenseDate(value: string | Date | null | undefined): string | null {
+    const date = this.parseExpenseDate(value);
+    if (!date) return null;
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   deleteExpense(expense: Expense) {

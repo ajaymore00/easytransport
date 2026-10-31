@@ -98,7 +98,10 @@
 
             <mat-form-field appearance="fill" class="w-full">
               <mat-label>Date</mat-label>
-              <input matInput type="date" [(ngModel)]="expenseForm.date" name="date" #dateCtrl="ngModel" required />
+              <input matInput [matDatepicker]="expenseDatePicker" [(ngModel)]="expenseForm.date" name="date"
+                #dateCtrl="ngModel" required />
+              <mat-datepicker-toggle matSuffix [for]="expenseDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #expenseDatePicker></mat-datepicker>
               <mat-error *ngIf="dateCtrl.invalid && (dateCtrl.dirty || dateCtrl.touched)">
                 <span *ngIf="dateCtrl.errors?.['required']">Date is required.</span>
               </mat-error>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { DashboardService } from '../services/dashboard.service';
 import { DashboardData, DashboardExpense } from '../models/dashboard.model';
 import { DASHBOARD_MOCK_DATA } from '../mocks/dashboard.mock';
@@ -7,7 +8,7 @@ import { environment } from '../../environments/environment';
 
 @Component({
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
 })

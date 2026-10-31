@@ -1,12 +1,32 @@
 <div class="p-4 md:p-6 text-white">
 
   <div class="flex flex-col items-start md:flex-row md:items-center md:justify-between mb-6">
-    <h2 class="text-2xl font-bold text-white mb-3 md:mb-0">Route Management</h2>
+    <div>
+      <h2 class="text-2xl font-bold text-white mb-1">Trip Management</h2>
+      <p class="text-sm text-slate-400">Plan trips, move them through delivery, and track estimated profitability.</p>
+    </div>
     <button type="button" class="app-button app-button--primary w-full md:w-auto" (click)="openForm()">
-      + Add Route
+      + Plan a trip
     </button>
   </div>
 
+  <section class="trip-profit-summary" aria-label="Trip profitability summary">
+    <article class="trip-profit-metric">
+      <span>Planned revenue</span>
+      <strong>₹{{ totalRevenue | number:'1.0-0' }}</strong>
+      <small>{{ activeRoutes.length }} non-cancelled trips</small>
+    </article>
+    <article class="trip-profit-metric">
+      <span>Estimated trip costs</span>
+      <strong>₹{{ totalTripCosts | number:'1.0-0' }}</strong>
+      <small>Fuel, tolls, driver pay and other costs</small>
+    </article>
+    <article class="trip-profit-metric" [class.trip-profit-metric--loss]="estimatedProfit < 0">
+      <span>Estimated profit</span>
+      <strong>₹{{ estimatedProfit | number:'1.0-0' }}</strong>
+      <small>Revenue minus recorded trip costs</small>
+    </article>
+  </section>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
     <div *ngFor="let trip of routes"
@@ -15,7 +35,7 @@
         <div class="management-card__identity">
           <span class="management-card__avatar management-card__avatar--route" aria-hidden="true">↗</span>
           <div class="management-card__identity-copy">
-            <span class="management-card__eyebrow">ROUTE</span>
+            <span class="management-card__eyebrow">TRIP</span>
             <h3>{{ trip.routeName }}</h3>
           </div>
         </div>
@@ -52,30 +72,52 @@
 
       <section class="management-card__progress" aria-label="Route progress">
         <div class="management-card__progress-label">
-          <span>Trip progress</span><strong>{{ trip.progress }}%</strong>
+          <span>Trip progress</span><strong>{{ tripProgress(trip) }}%</strong>
         </div>
         <div class="management-card__progress-track">
-          <div class="management-card__progress-fill" [style.width.%]="trip.progress"></div>
+          <div class="management-card__progress-fill" [style.width.%]="tripProgress(trip)"></div>
+        </div>
+      </section>
+
+      <section class="trip-profit-breakdown" aria-label="Trip financial summary">
+        <div><small>Revenue</small><strong>₹{{ (trip.amount || 0) | number:'1.0-0' }}</strong></div>
+        <div><small>Costs</small><strong>₹{{ tripCost(trip) | number:'1.0-0' }}</strong></div>
+        <div [class.trip-profit-value--loss]="tripProfit(trip) < 0">
+          <small>Est. profit</small><strong>₹{{ tripProfit(trip) | number:'1.0-0' }}</strong>
         </div>
       </section>
 
       <section class="management-card__checkpoints" *ngIf="trip.checkpoints?.length">
-        <h4>Checkpoints <span>{{ trip.checkpoints.length }}</span></h4>
+        <h4>Checkpoint progress <span>{{ checkpointProgress(trip.checkpoints) }}%</span></h4>
         <ul>
-          <li *ngFor="let point of trip.checkpoints | slice:0:3">
-            <span class="management-card__checkpoint-dot"></span>
+          <li *ngFor="let point of trip.checkpoints">
+            <span class="management-card__checkpoint-dot"
+              [class.management-card__checkpoint-dot--reached]="point.reached"></span>
             <span>{{ point.name }}</span>
-            <small>Pending</small>kfq
+            <small>{{ point.reached ? 'Reached' : 'Pending' }}</small>
+            <button *ngIf="trip.status?.toLowerCase() === 'in transit'" type="button" class="trip-checkpoint-toggle"
+              [disabled]="trip.checkpointUpdating"
+              [attr.aria-pressed]="point.reached"
+              [attr.aria-label]="(point.reached ? 'Mark ' + point.name + ' pending' : 'Mark ' + point.name + ' reached')"
+              (click)="toggleCheckpoint(trip, point)">
+              {{ trip.checkpointUpdating ? 'Saving...' : point.reached ? 'Undo' : 'Update location' }}
+            </button>
           </li>
         </ul>
       </section>
 
-      <footer class="management-card__actions">
+      <footer class="management-card__actions management-card__actions--trip">
         <button type="button" class="app-icon-button app-icon-button--primary" (click)="openForm(trip)" aria-label="Edit route">
           <mat-icon>edit</mat-icon>
         </button>
         <button type="button" class="app-icon-button app-icon-button--danger" (click)="deleteRoute(trip.id)" aria-label="Delete route">
           <mat-icon>delete</mat-icon>
+        </button>
+        <button *ngIf="canAdvanceStatus(trip)" type="button"
+          class="app-button app-button--secondary app-button--compact"
+          [disabled]="trip.statusUpdating"
+          (click)="advanceStatus(trip)">
+          {{ trip.statusUpdating ? 'Updating...' : statusActionLabel(trip) }}
         </button>
         <button type="button" (click)="viewMap(trip)" class="app-button app-button--primary management-card__map-button">
           View map <span aria-hidden="true">↗</span>
@@ -85,14 +127,14 @@
   </div>
   <!-- No Data -->
   <div *ngIf="routes.length === 0" class="text-center text-slate-400 mt-10">
-    🛣️ No routes found. Add a route to get started.
+    🛣️ No trips found. Plan your first trip to get started.
   </div>
 
   <ng-template #routeDialog>
     <div class="app-form-dialog">
       <div class="app-form-dialog__header">
-        <h2 mat-dialog-title>{{ editMode ? 'Edit Route' : 'Add New Route' }}</h2>
-        <p class="app-form-dialog__subtitle">Plan the trip, assign a driver and vehicle, and set its schedule.</p>
+        <h2 mat-dialog-title>{{ editMode ? 'Edit Trip' : 'Plan a Trip' }}</h2>
+        <p class="app-form-dialog__subtitle">Assign the driver and vehicle, schedule delivery, and estimate trip costs.</p>
       </div>
       <form [formGroup]="routeForm" class="app-form-dialog__form">
         <mat-dialog-content>
@@ -167,10 +209,30 @@
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="w-full">
-            <mat-label>Amount</mat-label>
+            <mat-label>Revenue (₹)</mat-label>
             <input matInput type="number" formControlName="amount" />
             <mat-error *ngIf="getControl('amount')?.hasError('required')">Amount is required.</mat-error>
             <mat-error *ngIf="getControl('amount')?.hasError('min')">Amount must be greater than 0.</mat-error>
+          </mat-form-field>
+        </div>
+
+        <h3 class="trip-cost-heading">Trip cost estimate <span>Optional — add costs to calculate trip profit.</span></h3>
+        <div class="app-form-grid app-form-grid--three">
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Fuel (₹)</mat-label>
+            <input matInput type="number" min="0" step="0.01" formControlName="fuelCost" />
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Tolls (₹)</mat-label>
+            <input matInput type="number" min="0" step="0.01" formControlName="tollCost" />
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Driver pay (₹)</mat-label>
+            <input matInput type="number" min="0" step="0.01" formControlName="driverCost" />
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Other costs (₹)</mat-label>
+            <input matInput type="number" min="0" step="0.01" formControlName="otherCost" />
           </mat-form-field>
         </div>
 
@@ -188,7 +250,7 @@
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="w-full">
-            <mat-label>Route Date</mat-label>
+            <mat-label>Trip Date</mat-label>
             <input matInput [matDatepicker]="startDate" id="vehicle-insurance" formControlName="startDate"
               name="startDate" />
             <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
@@ -251,7 +313,7 @@
         <mat-dialog-actions class="app-form-dialog__actions" align="end">
           <button type="button" class="app-button app-button--secondary" (click)="closeForm()">Cancel</button>
           <button type="button" class="app-button app-button--primary" (click)="saveRoute()">
-            {{ editMode ? 'Update Route' : 'Save Route' }}
+            {{ editMode ? 'Update Trip' : 'Save Trip' }}
           </button>
         </mat-dialog-actions>
       </form>

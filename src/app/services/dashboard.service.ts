@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable, tap } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { DashboardData } from '../models/dashboard.model';
+import { TripProfitabilityReport } from '../models/report.model';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
@@ -16,6 +17,11 @@ export class DashboardService {
 
   getDashboardData(): Observable<DashboardData> {
     return this.http.get<DashboardData>(`${this.baseUrl}/dashboard`);
+  }
+
+  getTripProfitabilityReport(startDate: string, endDate: string): Observable<TripProfitabilityReport> {
+    const params = new HttpParams().set('startDate', startDate).set('endDate', endDate);
+    return this.http.get<TripProfitabilityReport>(`${this.baseUrl}/reports/trip-profitability`, { params });
   }
 
   getDataById(url:string, id: string) {
@@ -44,7 +50,7 @@ export class DashboardService {
     const labels: Record<string, string> = {
       drivers: 'Driver',
       expenses: 'Expense',
-      routes: 'Route',
+      routes: 'Trip',
       vehicles: 'Vehicle',
     };
 

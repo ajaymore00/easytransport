@@ -16,9 +16,10 @@ export class SidebarComponent {
   readonly currentYear = new Date().getFullYear();
   readonly navigationItems = [
     { label: 'Dashboard', route: '/transport/dashboard', icon: '⌂', exact: true },
-    { label: 'Routes', route: '/transport/routes', icon: '↗', exact: false },
+    { label: 'Trips', route: '/transport/routes', icon: '↗', exact: false },
     { label: 'Vehicles', route: '/transport/vehicles', icon: '▰', exact: false },
     { label: 'Expenses', route: '/transport/expenses', icon: '₹', exact: false },
     { label: 'Drivers', route: '/transport/drivers', icon: '♙', exact: false },
+    { label: 'Reports', route: '/transport/reports', icon: '▤', exact: false },
   ];
 }

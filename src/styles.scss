@@ -1178,20 +1178,141 @@ mat-card.management-card {
   border-radius: 50%;
 }
 
+.management-card__checkpoint-dot--reached {
+  border-color: #4ade80;
+  background: #4ade80;
+  box-shadow: 0 0 0.5rem rgba(74, 222, 128, 0.45);
+}
+
 .management-card__checkpoints li small {
   flex: 0 0 auto;
-  margin-left: auto;
   color: #8292a8;
   font-size: 0.62rem;
+}
+
+.trip-checkpoint-toggle {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 0.25rem 0.45rem;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  border-radius: 0.4rem;
+  background: rgba(6, 182, 212, 0.08);
+  color: #a5f3fc;
+  font-size: 0.62rem;
+  cursor: pointer;
+}
+
+.trip-checkpoint-toggle:hover:not(:disabled) {
+  border-color: rgba(34, 211, 238, 0.45);
+  background: rgba(6, 182, 212, 0.16);
+}
+
+.trip-checkpoint-toggle:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+.trip-checkpoint-toggle:disabled {
+  cursor: wait;
+  opacity: 0.6;
 }
 
 .management-card__map-button {
   flex: 1;
 }
 
+.trip-profit-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.trip-profit-metric {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 0.9rem;
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.72), rgba(15, 23, 42, 0.68));
+}
+
+.trip-profit-metric > span,
+.trip-profit-breakdown small {
+  color: #94a3b8;
+  font-size: 0.7rem;
+}
+
+.trip-profit-metric > strong {
+  color: #f8fafc;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.trip-profit-metric > small {
+  color: #8292a8;
+  font-size: 0.65rem;
+}
+
+.trip-profit-metric--loss > strong,
+.trip-profit-value--loss strong {
+  color: #fca5a5;
+}
+
+.trip-profit-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 0.7rem;
+  background: rgba(2, 6, 23, 0.24);
+}
+
+.trip-profit-breakdown > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.trip-profit-breakdown strong {
+  color: #e2e8f0;
+  font-size: 0.78rem;
+}
+
+.trip-profit-value--loss strong {
+  color: #fca5a5;
+}
+
+.trip-cost-heading {
+  margin: 0.25rem 0 0.75rem;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.trip-cost-heading span {
+  margin-left: 0.35rem;
+  color: #8292a8;
+  font-size: 0.7rem;
+  font-weight: 400;
+}
+
+.management-card__actions--trip {
+  flex-wrap: wrap;
+}
+
+.management-card__actions--trip .management-card__map-button {
+  min-width: 7rem;
+}
+
 @media (max-width: 480px) {
   .management-card {
     padding: 0.95rem;
+  }
+
+  .trip-profit-summary {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   mat-card.management-card {

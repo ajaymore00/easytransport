@@ -1,0 +1,135 @@
+<main class="report-page">
+  <header class="report-header">
+    <div>
+      <span class="report-eyebrow">BUSINESS INSIGHTS</span>
+      <h1>Trip profitability</h1>
+      <p>Compare trip revenue with recorded operating costs for a selected period.</p>
+    </div>
+    <div class="report-export-actions">
+      <!-- <button type="button" class="app-button app-button--secondary"
+        [disabled]="!report || isLoading" (click)="exportCsv()">
+        Export CSV
+      </button> -->
+      <button type="button" class="app-button app-button--secondary"
+        [disabled]="!report || isLoading" (click)="exportPdf()">
+        Export PDF
+      </button>
+    </div>
+  </header>
+
+  <form class="report-filters" (ngSubmit)="loadReport()">
+    <label>
+      <span>From</span>
+      <input type="date" name="startDate" [(ngModel)]="startDate" required>
+    </label>
+    <label>
+      <span>To</span>
+      <input type="date" name="endDate" [(ngModel)]="endDate" required>
+    </label>
+    <button type="submit" class="app-button app-button--primary" [disabled]="isLoading">
+      {{ isLoading ? 'Loading...' : 'Run report' }}
+    </button>
+  </form>
+
+  <div *ngIf="errorMessage" class="report-message report-message--error" role="alert">
+    <span>{{ errorMessage }}</span>
+    <button *ngIf="report === null && !isLoading" type="button" class="app-button app-button--secondary"
+      (click)="loadReport()">Try again</button>
+  </div>
+
+  <div *ngIf="isLoading" class="report-message" role="status">Loading report data...</div>
+
+  <ng-container *ngIf="report && !isLoading">
+    <section class="report-summary" aria-label="Profitability totals">
+      <article class="report-metric">
+        <span>Trips included</span>
+        <strong>{{ report.tripCount }}</strong>
+        <small>Cancelled trips excluded</small>
+      </article>
+      <article class="report-metric">
+        <span>Total revenue</span>
+        <strong>₹{{ report.totalRevenue | number:'1.0-2' }}</strong>
+        <small>Trip amounts recorded</small>
+      </article>
+      <article class="report-metric">
+        <span>Total costs</span>
+        <strong>₹{{ totalCosts | number:'1.0-2' }}</strong>
+        <small>Fuel, tolls, driver, and other trip costs</small>
+      </article>
+      <article class="report-metric">
+        <span>Expenses</span>
+        <strong>₹{{ report.totalExpenses | number:'1.0-2' }}</strong>
+        <small>Expenses in the selected date range</small>
+      </article>
+      <article class="report-metric" [class.report-metric--loss]="totalProfit < 0">
+        <span>Estimated profit</span>
+        <strong>₹{{ totalProfit | number:'1.0-2' }}</strong>
+        <small>Revenue less trip costs and expenses</small>
+      </article>
+    </section>
+
+    <section class="report-cost-breakdown" aria-label="Cost breakdown">
+      <h2>Cost breakdown</h2>
+      <div class="report-cost-items">
+        <div><span>Fuel</span><strong>₹{{ report.totalFuelCost | number:'1.0-2' }}</strong></div>
+        <div><span>Tolls</span><strong>₹{{ report.totalTollCost | number:'1.0-2' }}</strong></div>
+        <div><span>Driver pay</span><strong>₹{{ report.totalDriverCost | number:'1.0-2' }}</strong></div>
+        <div><span>Other trip costs</span><strong>₹{{ report.totalOtherCost | number:'1.0-2' }}</strong></div>
+        <div><span>General expenses</span><strong>₹{{ report.totalExpenses | number:'1.0-2' }}</strong></div>
+      </div>
+    </section>
+
+    <section class="report-table-section" aria-label="Trip profitability details">
+      <div class="report-table-heading">
+        <div>
+          <h2>Trip breakdown</h2>
+          <p>{{ report.startDate | date:'MMM d, y' }} – {{ report.endDate | date:'MMM d, y' }}</p>
+        </div>
+        <span>{{ report.trips.length }} trips</span>
+      </div>
+
+      <div class="report-empty" *ngIf="report.trips.length === 0">
+        No trips found in this date range.
+      </div>
+
+      <div class="report-table-scroll" *ngIf="report.trips.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Trip</th>
+              <th scope="col">Date</th>
+              <th scope="col">Status</th>
+              <th scope="col">Revenue</th>
+              <th scope="col">Fuel</th>
+              <th scope="col">Tolls</th>
+              <th scope="col">Driver</th>
+              <th scope="col">Other</th>
+              <th scope="col">Total costs</th>
+              <th scope="col">Profit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trip of report.trips">
+              <td>
+                <strong>{{ trip.routeNo }}</strong>
+                <small>{{ trip.startLocation }} → {{ trip.endLocation }}</small>
+              </td>
+              <td>{{ trip.date | date:'MMM d, y' }}</td>
+              <td><span class="report-status">{{ trip.status }}</span></td>
+              <td>₹{{ trip.revenue | number:'1.0-2' }}</td>
+              <td>₹{{ trip.fuelCost | number:'1.0-2' }}</td>
+              <td>₹{{ trip.tollCost | number:'1.0-2' }}</td>
+              <td>₹{{ trip.driverCost | number:'1.0-2' }}</td>
+              <td>₹{{ trip.otherCost | number:'1.0-2' }}</td>
+              <td>₹{{ trip.totalCosts | number:'1.0-2' }}</td>
+              <td [class.report-profit--loss]="trip.profit < 0">
+                <strong>₹{{ trip.profit | number:'1.0-2' }}</strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="report-note">Expenses are shown separately and included in estimated profit, but are not assigned to individual trips.</p>
+    </section>
+  </ng-container>
+</main>

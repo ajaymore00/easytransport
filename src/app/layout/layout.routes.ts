@@ -41,6 +41,13 @@ export const LAYOUT_ROUTES: Routes = [
                         (m) => m.RouteComponent
                     ),
             }, 
+             {
+                 path: 'reports',
+                 loadComponent: () =>
+                     import('./../reports/reports.component').then(
+                         (m) => m.ReportsComponent
+                     ),
+             },
             {
                 path: '',
                 redirectTo: 'dashboard',

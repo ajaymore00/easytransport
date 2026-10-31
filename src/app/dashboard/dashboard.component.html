@@ -3,7 +3,7 @@
     <div class="dashboard-hero__copy">
       <span class="dashboard-eyebrow"><span class="dashboard-eyebrow__dot"></span> TRANSPORT OVERVIEW</span>
       <h1>Good day, here's your fleet at a glance.</h1>
-      <p>Keep track of routes, vehicles, drivers, and expenses in one place.</p>
+      <p>Keep track of trips, vehicles, drivers, and expenses in one place.</p>
     </div>
     <div class="dashboard-hero__date">
       <span class="dashboard-hero__date-icon" aria-hidden="true">◷</span>
@@ -45,7 +45,7 @@
 
     <article class="dashboard-stat dashboard-stat--blue">
       <div class="dashboard-stat__top">
-        <span class="dashboard-stat__label">Today's routes</span>
+        <span class="dashboard-stat__label">Today's trips</span>
         <span class="dashboard-stat__icon" aria-hidden="true">🛣️</span>
       </div>
       <strong class="dashboard-stat__value">{{ todayRoutes.length }}</strong>
@@ -72,11 +72,12 @@
         <div class="dashboard-panel__title-wrap">
           <span class="dashboard-panel__icon dashboard-panel__icon--cyan" aria-hidden="true">⌖</span>
           <div>
-            <h2>Today's routes</h2>
+            <h2>Today's trips</h2>
             <p>Live schedule overview</p>
           </div>
         </div>
-        <span class="dashboard-panel__count">{{ todayRoutes.length }} routes</span>
+        <span class="dashboard-panel__count">{{ todayRoutes.length }} trips</span>
+        <a class="dashboard-panel__link" routerLink="/transport/routes" aria-label="View all trips">View all <span aria-hidden="true">→</span></a>
       </header>
 
       <div *ngFor="let route of todayRoutes" class="dashboard-route">
@@ -92,7 +93,7 @@
 
       <div *ngIf="!isLoading && !hasError && todayRoutes.length === 0" class="dashboard-empty">
         <span aria-hidden="true">🛣️</span>
-        <p>No routes scheduled for today.</p>
+        <p>No trips scheduled for today.</p>
       </div>
     </article>
 
@@ -101,11 +102,12 @@
         <div class="dashboard-panel__title-wrap">
           <span class="dashboard-panel__icon dashboard-panel__icon--blue" aria-hidden="true">▦</span>
           <div>
-            <h2>Upcoming routes</h2>
+            <h2>Upcoming trips</h2>
             <p>What's coming next</p>
           </div>
         </div>
         <span class="dashboard-panel__count">{{ futureRoutes.length }} planned</span>
+        <a class="dashboard-panel__link" routerLink="/transport/routes" aria-label="View all trips">View all <span aria-hidden="true">→</span></a>
       </header>
 
       <div *ngFor="let route of futureRoutes" class="dashboard-upcoming">
@@ -133,6 +135,7 @@
           </div>
         </div>
         <span class="dashboard-panel__count">{{ vehicles.length }} total</span>
+        <a class="dashboard-panel__link" routerLink="/transport/vehicles" aria-label="View all vehicles">View all <span aria-hidden="true">→</span></a>
       </header>
 
       <div *ngFor="let vehicle of vehicles" class="dashboard-list-item">
@@ -160,6 +163,7 @@
           </div>
         </div>
         <span class="dashboard-panel__count">₹{{ totalExpenses | number:'1.0-0' }} total</span>
+        <a class="dashboard-panel__link" routerLink="/transport/expenses" aria-label="View all expenses">View all <span aria-hidden="true">→</span></a>
       </header>
 
       <div *ngFor="let expense of expenses" class="dashboard-expense">
@@ -187,6 +191,7 @@
           </div>
         </div>
         <span class="dashboard-panel__count">{{ drivers.length }} total</span>
+        <a class="dashboard-panel__link" routerLink="/transport/drivers" aria-label="View all drivers">View all <span aria-hidden="true">→</span></a>
       </header>
 
       <div *ngFor="let driver of drivers" class="dashboard-list-item">
