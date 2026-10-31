@@ -1,16 +1,16 @@
-import { Component, ViewChild, TemplateRef, OnInit } from '@angular/core';
+import { Component, ViewChild, TemplateRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { HttpClientModule } from '@angular/common/http';
 import { DashboardService } from '../services/dashboard.service';
 import { RouterModule } from '@angular/router';
+import { ConfirmationService } from '../services/confirmation.service';
 
 interface Expense {
   id?: number;
@@ -34,12 +34,10 @@ interface Expense {
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    HttpClientModule,
    RouterModule,
     ReactiveFormsModule,
   ],
   templateUrl: './expense.component.html',
-   providers: [DashboardService],
 })
 export class ExpenseComponent implements OnInit {
   @ViewChild('expenseDialog') expenseDialog!: TemplateRef<any>;
@@ -47,6 +45,7 @@ export class ExpenseComponent implements OnInit {
   expenses: any[] = [];
 
   editingExpense: any = null;
+  private confirmation = inject(ConfirmationService);
   expenseForm: any = {
     type: '',
     amount: 0,
@@ -80,7 +79,12 @@ export class ExpenseComponent implements OnInit {
       description: '',
     };
 
-    const ref = this.dialog.open(this.expenseDialog, { width: '500px' });
+    const ref = this.dialog.open(this.expenseDialog, {
+      width: '720px',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: '90vh',
+      panelClass: 'app-form-dialog-panel',
+    });
     ref.afterClosed().subscribe((result) => {
       if (result) {
         const payload = {
@@ -98,11 +102,29 @@ export class ExpenseComponent implements OnInit {
     });
   }
 
+  confirmSaveExpense(form: NgForm, dialogRef: MatDialogRef<unknown>) {
+    if (form.invalid) return;
+
+    const action = this.editingExpense ? 'update' : 'create';
+    this.confirmation.confirm(
+      `${action === 'update' ? 'Update' : 'Create'} expense?`,
+      `Are you sure you want to ${action} this expense?`,
+      action === 'update' ? 'Update expense' : 'Create expense',
+    ).subscribe((confirmed) => {
+      if (confirmed) dialogRef.close(form.value);
+    });
+  }
+
   editExpense(expense: Expense) {
     this.editingExpense = expense;
     this.expenseForm = { ...expense };
 
-    const ref = this.dialog.open(this.expenseDialog, { width: '500px' });
+    const ref = this.dialog.open(this.expenseDialog, {
+      width: '720px',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: '90vh',
+      panelClass: 'app-form-dialog-panel',
+    });
     ref.afterClosed().subscribe((result) => {
       if (result) {
         const id = expense._id || expense.id;
@@ -120,15 +142,20 @@ export class ExpenseComponent implements OnInit {
   }
 
   deleteExpense(expense: Expense) {
-    const id = (expense as any)._id || (expense as any).id;
-    if (!id) {
-      this.expenses = this.expenses.filter((e) => e !== expense);
-      return;
-    }
+    this.confirmation.confirm('Delete expense?', 'Are you sure you want to delete this expense?', 'Delete expense', true)
+      .subscribe((confirmed) => {
+        if (!confirmed) return;
 
-    this.dashboardService.deleteData('expenses', String(id)).subscribe({
-      next: () => (this.expenses = this.expenses.filter((e) => (e._id || e.id) !== id)),
-      error: (err: any) => console.error('Delete expense failed', err),
+        const id = (expense as any)._id || (expense as any).id;
+        if (!id) {
+          this.expenses = this.expenses.filter((e) => e !== expense);
+          return;
+        }
+
+        this.dashboardService.deleteData('expenses', String(id)).subscribe({
+          next: () => (this.expenses = this.expenses.filter((e) => (e._id || e.id) !== id)),
+          error: (err: any) => console.error('Delete expense failed', err),
+        });
     });
   }
 

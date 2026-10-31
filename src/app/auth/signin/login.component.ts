@@ -3,15 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { HttpClientModule } from '@angular/common/http';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule,HttpClientModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  providers: [AuthService],
 })
 export class LoginComponent {
   mobileNumber = '';
@@ -19,7 +18,11 @@ export class LoginComponent {
   showPassword = false;
   isLoading = false;
 
-  constructor(private router: Router, private auth: AuthService) {}
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+    private notifications: NotificationService,
+  ) {}
 
   togglePassword() {
     this.showPassword = !this.showPassword;
@@ -27,7 +30,7 @@ export class LoginComponent {
 
   login() {
     if (!this.mobileNumber || !this.password) {
-      alert('Please enter mobile number and password');
+      this.notifications.error('Please enter your mobile number and password.');
       return;
     }
 
@@ -43,6 +46,7 @@ export class LoginComponent {
               if (me?.user) {
                 localStorage.setItem('user', JSON.stringify(me.user));
               }
+              this.notifications.success('Logged in successfully.');
               this.router.navigate(['transport/dashboard']);
             },
             error: () => {
@@ -51,12 +55,11 @@ export class LoginComponent {
             }
           });
         } else {
-          alert('Login failed');
+          this.notifications.error('Login failed. Please try again.');
         }
       },
-      error: (err) => {
+      error: () => {
         this.isLoading = false;
-        alert(err?.error?.message || 'Login failed');
       }
     });
   }

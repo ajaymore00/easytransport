@@ -1,12 +1,12 @@
 <div class="flex h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 overflow-hidden">
   <!-- Sidebar -->
   <app-sidebar
-    [class.hidden]="!sidebarOpen && isSmallScreen"
+    [class.sidebar-closed]="!sidebarOpen && isSmallScreen"
     [class.fixed]="isSmallScreen"
-    [class.z-50]="isSmallScreen" (menuToggle)="toggleSidebar()"
-  class="backdrop-blur-xl bg-slate-950/60 text-white border-r border-white/5 shadow-2xl 
-         transition-all duration-300 ease-in-out 
-         fixed inset-0 z-50 p-4 md:relative md:flex md:flex-col md:w-64 md:inset-auto md:z-auto md:p-0"
+    [class.z-50]="isSmallScreen"
+    (closeRequested)="closeSidebar()"
+    class="w-72 max-w-[88vw] shrink-0 shadow-2xl transition-all duration-300 ease-in-out
+           fixed inset-y-0 left-0 z-50 md:relative md:inset-auto md:z-auto md:w-64 md:max-w-none"
   ></app-sidebar>
 
   <!-- Overlay for mobile -->
@@ -22,7 +22,7 @@
     <app-header (menuToggle)="toggleSidebar()"></app-header>
 
     <!-- Main content -->
-    <main class="flex-1 overflow-y-auto  mt-16 sm:p-6 p-0">
+    <main class="flex-1 overflow-y-auto sm:p-6 p-0">
       <div
         class="bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-2xl text-white rounded-none sm:p-6 p-0 sm:rounded-2xl"
       >

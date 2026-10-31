@@ -19,22 +19,19 @@
         <div>
           <label>Transporter / Company Name</label>
           <input type="text" [(ngModel)]="transporterName" name="transporterName" required
-            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
-            placeholder="Transporter or Company Name">
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label>Owner / Contact Name</label>
             <input type="text" [(ngModel)]="ownerName" name="ownerName" required
-              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
-              placeholder="Owner Name">
+              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
           </div>
           <div>
             <label>GST Number (optional)</label>
             <input type="text" [(ngModel)]="gstNo" name="gstNo"
-              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
-              placeholder="GST Number (if any)">
+              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
           </div>
         </div>
 
@@ -42,22 +39,19 @@
           <div>
             <label>Mobile Number</label>
             <input type="tel" [(ngModel)]="mobileNumber" name="mobileNumber" required
-              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
-              placeholder="10-digit mobile number">
+              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
           </div>
           <div>
             <label>WhatsApp Number</label>
             <input type="tel" [(ngModel)]="whatsappNumber" name="whatsappNumber"
-              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
-              placeholder="WhatsApp contact">
+              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
           </div>
         </div>
 
         <div>
           <label>Email</label>
           <input type="email" [(ngModel)]="email" name="email"
-            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
-            placeholder="you@example.com">
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -65,9 +59,9 @@
             <label>Password</label>
             <div class="relative">
               <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required
-                class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
-                placeholder="Create a password">
-              <button type="button" (click)="togglePassword()" class="absolute right-3 top-2.5 text-sm">
+                class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+              <button type="button" (click)="togglePassword()"
+                class="app-icon-button app-icon-button--quiet app-icon-button--small absolute right-3 top-2.5">
                 <i class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</i>
               </button>
             </div>
@@ -76,17 +70,16 @@
             <label>Confirm Password</label>
             <div class="relative">
               <input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword" name="confirmPassword" required
-                class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
-                placeholder="Confirm password">
-              <button type="button" (click)="toggleConfirmPassword()" class="absolute right-3 top-2.5 text-sm">
+                class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
+              <button type="button" (click)="toggleConfirmPassword()"
+                class="app-icon-button app-icon-button--quiet app-icon-button--small absolute right-3 top-2.5">
                 <i class="material-icons">{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</i>
               </button>
             </div>
           </div>
         </div>
 
-        <button [disabled]="isLoading"
-          class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-blue-500 hover:to-cyan-400 text-white py-2 rounded-lg font-semibold transition-transform hover:scale-105">
+        <button type="submit" [disabled]="isLoading" class="app-button app-button--primary app-button--block">
           {{ isLoading ? 'Creating...' : 'Sign Up' }}
         </button>
 
@@ -100,24 +93,21 @@
         <div>
           <label>Mobile Number</label>
           <input type="tel" readonly [(ngModel)]="mobileNumber" name="mobileNumber" 
-            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
-            placeholder="10-digit mobile number">
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
         </div>
 
         <div>
           <label>OTP</label>
           <input type="text" [(ngModel)]="otp" name="otp" required
-            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none placeholder-white/60"
-            placeholder="Enter OTP">
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 border border-white/30 outline-none">
         </div>
 
         <div class="flex gap-3">
-          <button type="submit" [disabled]="isLoading"
-            class="flex-1 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-blue-500 hover:to-cyan-400 text-white py-2 rounded-lg font-semibold transition-transform hover:scale-105">
+          <button type="submit" [disabled]="isLoading" class="app-button app-button--primary flex-1">
             {{ isLoading ? 'Verifying...' : 'Verify OTP' }}
           </button>
           <button type="button" (click)="resendOtp()" [disabled]="isLoading"
-            class="flex-none bg-transparent border border-white/30 text-white px-4 py-2 rounded-lg">
+            class="app-button app-button--secondary">
             Resend OTP
           </button>
         </div>

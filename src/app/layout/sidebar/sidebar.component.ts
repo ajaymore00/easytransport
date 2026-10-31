@@ -10,6 +10,15 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-  @Output() menuToggle = new EventEmitter<void>();
+  @Output() closeRequested = new EventEmitter<void>();
   @Input() isOpen = true;
+
+  readonly currentYear = new Date().getFullYear();
+  readonly navigationItems = [
+    { label: 'Dashboard', route: '/transport/dashboard', icon: '⌂', exact: true },
+    { label: 'Routes', route: '/transport/routes', icon: '↗', exact: false },
+    { label: 'Vehicles', route: '/transport/vehicles', icon: '▰', exact: false },
+    { label: 'Expenses', route: '/transport/expenses', icon: '₹', exact: false },
+    { label: 'Drivers', route: '/transport/drivers', icon: '♙', exact: false },
+  ];
 }

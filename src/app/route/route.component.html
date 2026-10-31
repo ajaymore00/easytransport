@@ -1,8 +1,8 @@
-<div class="p-4 md:p-8 text-white">
+<div class="p-4 md:p-6 text-white">
 
-  <div class="flex sm:flex-col md:flex-row md:items-center md:justify-between mb-6">
+  <div class="flex flex-col items-start md:flex-row md:items-center md:justify-between mb-6">
     <h2 class="text-2xl font-bold text-white mb-3 md:mb-0">Route Management</h2>
-    <button mat-flat-button color="primary" (click)="openForm()" class="text-white font-semibold shadow-md">
+    <button type="button" class="app-button app-button--primary w-full md:w-auto" (click)="openForm()">
       + Add Route
     </button>
   </div>
@@ -10,119 +10,124 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
     <div *ngFor="let trip of routes"
-      class="bg-white/5 border border-white/10 backdrop-blur-md rounded-xl shadow-md p-4 hover:shadow-cyan-500/10 hover:border-white/20 transition-all duration-300">
-      <!-- Header -->
-      <div class="flex flex-col   justify-between mb-4">
-        <div>
-          <h3 class="text-lg font-semibold  text-cyan-400">
-            {{ trip.routeName }}
-          </h3>
-          <p class="text-sm text-slate-300">
-            {{ trip.startLocation }} → {{ trip.endLocation }}
-          </p>
-          <p class="text-xs text-slate-400 mt-1">
-            Date: {{ trip.date | date : "dd-MM-yyyy" }} | Time: {{ trip.startTime | date: "hh:mm a" }} - {{ trip.endTime | date: "hh:mm a" }}
-          </p>
+      class="management-card management-card--route">
+      <header class="management-card__header">
+        <div class="management-card__identity">
+          <span class="management-card__avatar management-card__avatar--route" aria-hidden="true">↗</span>
+          <div class="management-card__identity-copy">
+            <span class="management-card__eyebrow">ROUTE</span>
+            <h3>{{ trip.routeName }}</h3>
+          </div>
         </div>
+        <span class="management-card__status" [ngClass]="statusClass(trip.status)">
+          <span class="management-card__status-dot"></span>{{ trip.status }}
+        </span>
+      </header>
 
-        <div class="mt-3   flex flex-wrap justify-start   gap-2">
-          <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-sm font-medium border border-blue-500/30">
-            Driver: {{ trip.driverName }}
-          </span>
-          <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-sm font-medium border border-green-500/30">
-            Vehicle: {{ trip.vehicleNumber }}
-          </span>
-          <span
-            class="bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full text-sm font-medium border border-yellow-500/30">
-            Status: {{ trip.status }}
-          </span>
+      <div class="management-card__route-line">
+        <div class="management-card__route-point">
+          <span class="management-card__route-dot management-card__route-dot--start"></span>
+          <div><small>FROM</small><strong>{{ trip.startLocation }}</strong></div>
+        </div>
+        <span class="management-card__route-connector" aria-hidden="true"></span>
+        <div class="management-card__route-point">
+          <span class="management-card__route-dot management-card__route-dot--end"></span>
+          <div><small>TO</small><strong>{{ trip.endLocation }}</strong></div>
         </div>
       </div>
 
-      <!-- Route Progress -->
-      <div class="relative">
-        <div class="w-full bg-white/10 h-2 rounded-full mb-4">
-          <div class="bg-blue-500 h-2 rounded-full" [style.width.%]="trip.progress"></div>
-        </div>
-        <p class="text-right text-xs text-slate-400">
-          {{ trip.progress }}% Completed
-        </p>
+      <div class="management-card__meta">
+        <span><span aria-hidden="true">◷</span> {{ trip.date | date:'MMM d, y' }}</span>
+        <span>{{ trip.startTime | date:'hh:mm a' }} – {{ trip.endTime | date:'hh:mm a' }}</span>
       </div>
 
-      <!-- Checkpoints -->
-      <div class="mt-4">
-        <h4 class="font-semibold text-white mb-2">Checkpoints</h4>
-        <ul class="space-y-2">
-          <li *ngFor="let point of trip.checkpoints"
-            class="flex justify-between items-center border-b border-white/5 pb-1">
-            <span class="text-cyan-400">{{ point.name }}</span>
-            <!-- <span [class.text-green-600]="point.reached" [class.text-gray-500]="!point.reached" 
-               class="text-sm font-medium">-->
-            <span class="text-xs text-slate-400 font-medium">Pending</span>
-            <!-- </span> -->
+      <div class="management-card__tags">
+        <span class="management-card__tag management-card__tag--blue">
+          <span aria-hidden="true">♙</span>{{ trip.driverName || 'No driver assigned' }}
+        </span>
+        <span class="management-card__tag management-card__tag--cyan">
+          <span aria-hidden="true">▰</span>{{ trip.vehicleNumber || 'No vehicle assigned' }}
+        </span>
+      </div>
+
+      <section class="management-card__progress" aria-label="Route progress">
+        <div class="management-card__progress-label">
+          <span>Trip progress</span><strong>{{ trip.progress }}%</strong>
+        </div>
+        <div class="management-card__progress-track">
+          <div class="management-card__progress-fill" [style.width.%]="trip.progress"></div>
+        </div>
+      </section>
+
+      <section class="management-card__checkpoints" *ngIf="trip.checkpoints?.length">
+        <h4>Checkpoints <span>{{ trip.checkpoints.length }}</span></h4>
+        <ul>
+          <li *ngFor="let point of trip.checkpoints | slice:0:3">
+            <span class="management-card__checkpoint-dot"></span>
+            <span>{{ point.name }}</span>
+            <small>Pending</small>kfq
           </li>
         </ul>
-      </div>
+      </section>
 
-      <!-- Footer -->
-      <div class="mt-4 flex justify-end items-center gap-2">
-
-        <button mat-icon-button color="accent" (click)="openForm(trip)" aria-label="Edit route">
+      <footer class="management-card__actions">
+        <button type="button" class="app-icon-button app-icon-button--primary" (click)="openForm(trip)" aria-label="Edit route">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="warn" (click)="deleteRoute(trip.id)" aria-label="Delete route">
+        <button type="button" class="app-icon-button app-icon-button--danger" (click)="deleteRoute(trip.id)" aria-label="Delete route">
           <mat-icon>delete</mat-icon>
         </button>
-        <button (click)="viewMap(trip)" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-blue-500 hover:to-cyan-500 text-white rounded-md transition duration-300 shadow-md">
-          View on Map
+        <button type="button" (click)="viewMap(trip)" class="app-button app-button--primary management-card__map-button">
+          View map <span aria-hidden="true">↗</span>
         </button>
-      </div>
+      </footer>
     </div>
   </div>
   <!-- No Data -->
   <div *ngIf="routes.length === 0" class="text-center text-slate-400 mt-10">
-    🚗 No active tracking data available.
+    🛣️ No routes found. Add a route to get started.
   </div>
 
   <ng-template #routeDialog>
-    <div class="route-dialog">
-      <h3 class="text-2xl font-semibold text-white mb-4">
-        {{ editMode ? 'Edit Route' : 'Add New Route' }}
-      </h3>
-
-      <form [formGroup]="routeForm"   class="grid gap-4">
-        <div class="grid gap-4 sm:grid-cols-2">
+    <div class="app-form-dialog">
+      <div class="app-form-dialog__header">
+        <h2 mat-dialog-title>{{ editMode ? 'Edit Route' : 'Add New Route' }}</h2>
+        <p class="app-form-dialog__subtitle">Plan the trip, assign a driver and vehicle, and set its schedule.</p>
+      </div>
+      <form [formGroup]="routeForm" class="app-form-dialog__form">
+        <mat-dialog-content>
+        <div class="app-form-grid">
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Route Name</mat-label>
-            <input matInput formControlName="name" placeholder="Enter route name" />
+            <input matInput formControlName="name" />
             <mat-error *ngIf="getControl('name')?.hasError('required')">Route name is required.</mat-error>
             <mat-error *ngIf="getControl('name')?.hasError('maxlength')">Max 80 characters.</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Vendor / Company</mat-label>
-            <input matInput formControlName="vendor" placeholder="Enter vendor" />
+            <input matInput formControlName="vendor" />
             <mat-error *ngIf="getControl('vendor')?.hasError('required')">Vendor is required.</mat-error>
             <mat-error *ngIf="getControl('vendor')?.hasError('maxlength')">Max 100 characters.</mat-error>
           </mat-form-field>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="app-form-grid">
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Start Location</mat-label>
-            <input matInput formControlName="startLocation" placeholder="City, station or depot" />
+            <input matInput formControlName="startLocation" />
             <mat-error *ngIf="getControl('startLocation')?.hasError('required')">Start location is required.</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>End Location</mat-label>
-            <input matInput formControlName="endLocation" placeholder="City, station or depot" />
+            <input matInput formControlName="endLocation" />
             <mat-error *ngIf="getControl('endLocation')?.hasError('required')">End location is required.</mat-error>
           </mat-form-field>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-3">
-          <mat-form-field appearance="fill" class="w-full">
+        <div class="app-form-grid app-form-grid--three">
+          <mat-form-field appearance="fill" floatLabel="always" class="w-full">
             <mat-label>Driver</mat-label>
             <mat-select formControlName="driver">
               <mat-option *ngFor="let driver of drivers" [value]="driver">{{ driver }}</mat-option>
@@ -130,7 +135,7 @@
             <mat-error *ngIf="getControl('driver')?.hasError('required')">Pick a driver.</mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="fill" class="w-full">
+          <mat-form-field appearance="fill" floatLabel="always" class="w-full">
             <mat-label>Vehicle</mat-label>
             <mat-select formControlName="vehicle">
               <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle">{{ vehicle }}</mat-option>
@@ -138,7 +143,7 @@
             <mat-error *ngIf="getControl('vehicle')?.hasError('required')">Pick a vehicle.</mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="fill" class="w-full">
+          <mat-form-field appearance="fill" floatLabel="always" class="w-full">
             <mat-label>Cargo Type</mat-label>
             <mat-select formControlName="cargoType">
               <mat-option *ngFor="let type of cargoTypes" [value]="type">{{ type }}</mat-option>
@@ -147,30 +152,30 @@
           </mat-form-field>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-3">
+        <div class="app-form-grid app-form-grid--three">
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Load Weight</mat-label>
-            <input matInput type="text" formControlName="loadWeight" placeholder="e.g. 12 MT" />
+            <input matInput type="text" formControlName="loadWeight" />
             <mat-error *ngIf="getControl('loadWeight')?.hasError('required')">Load weight is required.</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Distance (km)</mat-label>
-            <input matInput type="number" formControlName="distanceKm" placeholder="Distance" />
+            <input matInput type="number" formControlName="distanceKm" />
             <mat-error *ngIf="getControl('distanceKm')?.hasError('required')">Distance is required.</mat-error>
             <mat-error *ngIf="getControl('distanceKm')?.hasError('min')">Distance must be greater than 0.</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Amount</mat-label>
-            <input matInput type="number" formControlName="amount" placeholder="₹" />
+            <input matInput type="number" formControlName="amount" />
             <mat-error *ngIf="getControl('amount')?.hasError('required')">Amount is required.</mat-error>
             <mat-error *ngIf="getControl('amount')?.hasError('min')">Amount must be greater than 0.</mat-error>
           </mat-form-field>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-3">
-          <mat-form-field appearance="fill" class="w-full">
+        <div class="app-form-grid app-form-grid--three">
+          <mat-form-field appearance="fill" floatLabel="always" class="w-full">
             <mat-label>Status</mat-label>
             <mat-select formControlName="status">
               <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
@@ -179,7 +184,7 @@
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Shipment Reference</mat-label>
-            <input matInput formControlName="shipmentReference" placeholder="Optional reference" />
+            <input matInput formControlName="shipmentReference" />
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="w-full">
@@ -193,7 +198,7 @@
           </mat-form-field>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="app-form-grid">
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Start Time</mat-label>
               <input matInput formControlName="startTime" [matTimepicker]="startTime">
@@ -211,34 +216,44 @@
           </mat-form-field>
         </div>
 
-        <div>
+        <div class="app-form-dialog__full-width">
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Checkpoints</mat-label>
             <div class="checkpoint-row">
-              <input matInput #checkpointInputRef placeholder="Type checkpoint and press add" />
-              <button mat-icon-button type="button" color="primary"
+              <input matInput #checkpointInputRef />
+              <button type="button" class="app-icon-button app-icon-button--primary app-checkpoint-add"
                 (click)="addCheckpointFromTemplate(checkpointInputRef)" aria-label="Add checkpoint">
                 <mat-icon>add</mat-icon>
               </button>
             </div>
           </mat-form-field>
-          <div class="flex flex-wrap gap-2 mt-2">
-            <button mat-stroked-button *ngFor="let point of routeForm.get('checkpoints')?.value; let i = index"
-              type="button" color="primary" (click)="removeCheckpoint(i)">
-              {{ point }} <mat-icon class="ml-1">close</mat-icon>
-            </button>
+          <div class="app-checkpoint-list" *ngIf="routeForm.get('checkpoints')?.value?.length">
+            <span class="app-checkpoint-chip" *ngFor="let point of routeForm.get('checkpoints')?.value; let i = index">
+              <span class="app-checkpoint-chip__label">{{ point }}</span>
+              <button
+                type="button"
+                class="app-checkpoint-chip__remove"
+                (click)="removeCheckpoint(i)"
+                [attr.aria-label]="'Remove checkpoint ' + point"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </span>
           </div>
         </div>
 
-        <mat-form-field appearance="fill" class="w-full">
+        <mat-form-field appearance="fill" class="w-full app-form-dialog__full-width">
           <mat-label>Notes</mat-label>
-          <textarea matInput rows="3" formControlName="notes" placeholder="Add route notes"></textarea>
+          <textarea matInput rows="3" formControlName="notes"></textarea>
         </mat-form-field>
 
-        <div class="flex justify-end gap-3 mt-4">
-          <button mat-stroked-button type="button" color="warn" (click)="closeForm()">Cancel</button>
-          <button mat-flat-button color="primary" type="button" (click)="saveRoute()">Save Route</button>
-        </div>
+        </mat-dialog-content>
+        <mat-dialog-actions class="app-form-dialog__actions" align="end">
+          <button type="button" class="app-button app-button--secondary" (click)="closeForm()">Cancel</button>
+          <button type="button" class="app-button app-button--primary" (click)="saveRoute()">
+            {{ editMode ? 'Update Route' : 'Save Route' }}
+          </button>
+        </mat-dialog-actions>
       </form>
     </div>
   </ng-template>

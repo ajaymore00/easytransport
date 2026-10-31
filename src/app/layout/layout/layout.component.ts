@@ -29,6 +29,9 @@ export class LayoutComponent {
     this.sidebarOpen = !this.sidebarOpen;
   }
 
-   
- 
+  closeSidebar() {
+    if (this.isSmallScreen) {
+      this.sidebarOpen = false;
+    }
+  }
 }

@@ -1,16 +1,17 @@
 import { Component, ViewChild, TemplateRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { HttpClientModule } from '@angular/common/http';
 import { DashboardService } from '../services/dashboard.service';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ConfirmationService } from '../services/confirmation.service';
 @Component({
   selector: 'app-driver',
   standalone: true,
@@ -24,18 +25,17 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatSelectModule,
     MatButtonModule,
     MatDialogModule,
-    HttpClientModule,
      MatDatepickerModule,
     MatNativeDateModule,
   ],
   templateUrl: './driver.component.html',
-   providers: [DashboardService],
 })
 export class DriverComponent implements OnInit {
   drivers: any[] = [];
 
   @ViewChild('driverDialog') driverDialog!: TemplateRef<any>;
   dashboardService = inject(DashboardService);
+  private confirmation = inject(ConfirmationService);
   editingDriver: any = null;
   driverForm: any = {
     name: '',
@@ -78,7 +78,12 @@ export class DriverComponent implements OnInit {
       status: 'Available',
     };
 
-    const ref = this.dialog.open(this.driverDialog, { width: '520px' });
+    const ref = this.dialog.open(this.driverDialog, {
+      width: '720px',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: '90vh',
+      panelClass: 'app-form-dialog-panel',
+    });
     ref.afterClosed().subscribe((result) => {
       if (result) {
         const payload = { ...result, dateAdded: new Date() };
@@ -94,18 +99,29 @@ export class DriverComponent implements OnInit {
     // kept for compatibility if referenced elsewhere
   }
 
-  saveDriver(form?: any) {
-    // kept for backward compatibility; prefer dialog-based save flow
-    if (form && form.invalid) return;
-    if (this.editingDriver) Object.assign(this.editingDriver, this.driverForm);
-    else this.drivers.push({ ...this.driverForm, dateAdded: new Date() });
+  confirmSaveDriver(form: NgForm, dialogRef: MatDialogRef<unknown>) {
+    if (form.invalid) return;
+
+    const action = this.editingDriver ? 'update' : 'create';
+    this.confirmation.confirm(
+      `${action === 'update' ? 'Update' : 'Create'} driver?`,
+      `Are you sure you want to ${action} this driver?`,
+      action === 'update' ? 'Update driver' : 'Create driver',
+    ).subscribe((confirmed) => {
+      if (confirmed) dialogRef.close(form.value);
+    });
   }
 
   editDriver(driver: any) {
     this.editingDriver = driver;
     this.driverForm = { ...driver };
 
-    const ref = this.dialog.open(this.driverDialog, { width: '520px' });
+    const ref = this.dialog.open(this.driverDialog, {
+      width: '720px',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: '90vh',
+      panelClass: 'app-form-dialog-panel',
+    });
     ref.afterClosed().subscribe((result) => {
       if (result) {
         this.dashboardService.updateData('drivers', driver._id || driver.id, result).subscribe({
@@ -117,15 +133,20 @@ export class DriverComponent implements OnInit {
   }
 
   deleteDriver(driver: any) {
-    const id = driver._id || driver.id;
-    if (!id) {
-      this.drivers = this.drivers.filter((d) => d !== driver);
-      return;
-    }
+    this.confirmation.confirm('Delete driver?', 'Are you sure you want to delete this driver?', 'Delete driver', true)
+      .subscribe((confirmed) => {
+        if (!confirmed) return;
 
-    this.dashboardService.deleteData('drivers', id).subscribe({
-      next: () => (this.drivers = this.drivers.filter((d) => d !== driver)),
-      error: (err) => console.error('Delete failed', err),
+        const id = driver._id || driver.id;
+        if (!id) {
+          this.drivers = this.drivers.filter((d) => d !== driver);
+          return;
+        }
+
+        this.dashboardService.deleteData('drivers', id).subscribe({
+          next: () => (this.drivers = this.drivers.filter((d) => d !== driver)),
+          error: (err) => console.error('Delete failed', err),
+        });
     });
   }
 

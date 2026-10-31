@@ -1,1 +1,19 @@
- <router-outlet></router-outlet>
+<router-outlet></router-outlet>
+
+<div *ngIf="loading.isLoading$ | async" class="app-loading-overlay" role="status" aria-live="polite">
+  <span class="app-loading-spinner" aria-hidden="true"></span>
+  <span>Loading...</span>
+</div>
+
+<div
+  *ngIf="notifications.current$ | async as notification"
+  class="app-snackbar"
+  [ngClass]="'app-snackbar--' + notification.type"
+  role="status"
+  aria-live="polite"
+>
+  <span>{{ notification.message }}</span>
+  <button type="button" class="app-snackbar__dismiss" (click)="notifications.dismiss()" aria-label="Dismiss message">
+    ×
+  </button>
+</div>

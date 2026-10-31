@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { DashboardService } from '../services/dashboard.service';
-import { HttpClientModule } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -16,6 +15,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { ConfirmationService } from '../services/confirmation.service';
 interface Vehicle {
   _id?: string;
   id?: number;
@@ -41,7 +41,6 @@ interface Vehicle {
     RouterModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -54,7 +53,6 @@ interface Vehicle {
   ],
   templateUrl: './vehicle.component.html',
   styleUrl: './vehicle.component.scss',
-  providers: [DashboardService],
 })
 export class VehicleComponent implements OnInit {
   @ViewChild('vehicleDialog') vehicleDialog!: TemplateRef<any>;
@@ -63,6 +61,7 @@ export class VehicleComponent implements OnInit {
 
   dashboardService = inject(DashboardService);
   dialog = inject(MatDialog);
+  private confirmation = inject(ConfirmationService);
   editingVehicle: Vehicle | null = null;
   vehicleForm: Partial<Vehicle> = {};
 
@@ -101,7 +100,9 @@ export class VehicleComponent implements OnInit {
     this.vehicleForm = vehicle ? { ...vehicle } : {};
     this.dialog.open(this.vehicleDialog, {
       width: '720px',
-      panelClass: 'vehicle-dialog-panel',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: '90vh',
+      panelClass: 'app-form-dialog-panel',
     });
   }
 
@@ -118,6 +119,17 @@ export class VehicleComponent implements OnInit {
   }
 
   saveVehicle() {
+    const action = this.editingVehicle ? 'update' : 'create';
+    this.confirmation.confirm(
+      `${action === 'update' ? 'Update' : 'Create'} vehicle?`,
+      `Are you sure you want to ${action} this vehicle?`,
+      action === 'update' ? 'Update vehicle' : 'Create vehicle',
+    ).subscribe((confirmed) => {
+      if (confirmed) this.persistVehicle();
+    });
+  }
+
+  private persistVehicle() {
     const payload = {
       ...this.vehicleForm,
       status: this.vehicleForm.status || 'Active',
@@ -159,13 +171,18 @@ export class VehicleComponent implements OnInit {
     const id = this.getVehicleId(vehicle);
     if (!id) return;
 
-    this.dashboardService.deleteData('vehicles', id).subscribe({
-      next: () => {
-        this.vehicles = this.vehicles.filter((v) => this.getVehicleId(v) !== id);
-      },
-      error: (error) => {
-        console.error('Error deleting vehicle:', error);
-      },
+    this.confirmation.confirm('Delete vehicle?', 'Are you sure you want to delete this vehicle?', 'Delete vehicle', true)
+      .subscribe((confirmed) => {
+        if (!confirmed) return;
+
+        this.dashboardService.deleteData('vehicles', id).subscribe({
+          next: () => {
+            this.vehicles = this.vehicles.filter((v) => this.getVehicleId(v) !== id);
+          },
+          error: (error) => {
+            console.error('Error deleting vehicle:', error);
+          },
+        });
     });
   }
 }

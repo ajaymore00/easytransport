@@ -1,40 +1,68 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { DashboardService } from '../services/dashboard.service';
-import { HttpClientModule } from '@angular/common/http';
+import { DashboardData, DashboardExpense } from '../models/dashboard.model';
+import { DASHBOARD_MOCK_DATA } from '../mocks/dashboard.mock';
+import { environment } from '../../environments/environment';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule],
+  imports: [CommonModule],
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
-  providers: [DashboardService],
 })
-export class DashboardComponent {
-  todayRoutes: any[] = [];
-  futureRoutes: any[] = [];
-  vehicles: any[] = [];
-  expenses: any[] = [];
-  drivers: any[] = [];
-  notifications: any[] = [];
-  showNotifications = false;
-  constructor(private dashboardService: DashboardService) { }
+export class DashboardComponent implements OnInit {
+  readonly today = new Date();
+  todayRoutes: DashboardData['todayRoutes'] = environment.production ? [] : DASHBOARD_MOCK_DATA.todayRoutes;
+  futureRoutes: DashboardData['futureRoutes'] = environment.production ? [] : DASHBOARD_MOCK_DATA.futureRoutes;
+  vehicles: DashboardData['vehicles'] = environment.production ? [] : DASHBOARD_MOCK_DATA.vehicles;
+  expenses: DashboardExpense[] = environment.production ? [] : DASHBOARD_MOCK_DATA.expenses;
+  drivers: DashboardData['drivers'] = environment.production ? [] : DASHBOARD_MOCK_DATA.drivers;
+  isLoading = false;
+  hasError = false;
 
-  ngOnInit() {
-    this.todayRoutes = this.dashboardService.getTodayRoutes();
-    this.futureRoutes = this.dashboardService.getFutureRoutes();
-   
-    this.expenses = this.dashboardService.getExpenses();
-    this.drivers = this.dashboardService.getDrivers();
-    this.notifications = this.dashboardService.getNotifications();
+  constructor(private dashboardService: DashboardService) {}
+
+  ngOnInit(): void {
+    this.loadDashboard();
   }
-  toggleNotifications() {
-    this.showNotifications = !this.showNotifications;
+
+  loadDashboard(): void {
+    this.isLoading = true;
+    this.hasError = false;
+
+    this.dashboardService.getDashboardData().subscribe({
+      next: (data) => {
+        this.todayRoutes = data.todayRoutes;
+        this.futureRoutes = data.futureRoutes;
+        this.vehicles = data.vehicles;
+        this.expenses = data.expenses;
+        this.drivers = data.drivers;
+        this.isLoading = false;
+      },
+      error: (error: unknown) => {
+        console.error('Failed to load dashboard data:', error);
+        this.hasError = true;
+        this.isLoading = false;
+      },
+    });
   }
+
   get totalExpenses() {
-    return this.expenses.reduce((sum, e) => sum + e.amount, 0);
+    return this.expenses.reduce((sum, expense) => sum + expense.amount, 0);
   }
 
+  statusClass(status?: string): string {
+    const value = status?.toLowerCase() ?? '';
+    if (value.includes('inactive') || value.includes('complete')) {
+      return 'dashboard-status--neutral';
+    }
+    if (value.includes('pending') || value.includes('route')) {
+      return 'dashboard-status--warning';
+    }
+    if (value.includes('active') || value.includes('way') || value.includes('available')) {
+      return 'dashboard-status--success';
+    }
+    return 'dashboard-status--info';
+  }
 }

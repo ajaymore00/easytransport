@@ -3,70 +3,74 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
       <h2 class="text-2xl font-bold text-white mb-3 md:mb-0">Manage Drivers</h2>
-      <button (click)="openForm()"
-        class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold rounded-lg shadow-md transition duration-300">
+      <button type="button" (click)="openForm()" class="app-button app-button--primary">
         + Add Driver
       </button>
     </div>
 
     <!-- Driver List -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div *ngFor="let driver of drivers"
-        class="bg-white/5 border border-white/10 backdrop-blur-md rounded-xl shadow-md p-4 hover:shadow-cyan-500/10 hover:border-white/20 transition-all duration-300">
-        <div class="flex justify-between items-center">
-          <h3 class="text-lg font-semibold text-cyan-400">{{ driver.name }}</h3>
-          <span class="text-xs px-2.5 py-1 rounded-full font-medium border" [ngClass]="{
-              'bg-green-500/20 text-green-300 border-green-500/30': driver.status === 'Available',
-              'bg-yellow-500/20 text-yellow-300 border-yellow-500/30': driver.status === 'On Duty'
-            }">
-            {{ driver.status }}
+        class="management-card management-card--driver">
+        <header class="management-card__header">
+          <div class="management-card__identity">
+            <span class="management-card__avatar management-card__avatar--driver" aria-hidden="true">
+              {{ driver.name?.charAt(0) || 'D' }}
+            </span>
+            <div class="management-card__identity-copy">
+              <span class="management-card__eyebrow">DRIVER PROFILE</span>
+              <h3>{{ driver.name }}</h3>
+            </div>
+          </div>
+          <span class="management-card__status"
+            [ngClass]="driver.status === 'Available' ? 'management-card__status--success' : 'management-card__status--warning'">
+            <span class="management-card__status-dot"></span>{{ driver.status || 'Unknown' }}
           </span>
+        </header>
+
+        <div class="management-card__detail-grid">
+          <div><small>License number</small><strong>{{ driver.licenseNo || '—' }}</strong></div>
+          <div><small>Contact</small><strong>{{ driver.contact || '—' }}</strong></div>
+          <div><small>Experience</small><strong>{{ driver.experience || '—' }}<span *ngIf="driver.experience"> years</span></strong></div>
+          <div><small>Salary</small><strong>{{ driver.salary !== undefined && driver.salary !== null ? (driver.salary | currency) : '—' }}</strong></div>
+          <div><small>Joining date</small><strong>{{ driver.joiningDate ? (driver.joiningDate | date:'MMM d, y') : '—' }}</strong></div>
+          <div><small>Address</small><strong>{{ driver.address || '—' }}</strong></div>
         </div>
 
-        <div class="mt-2 text-slate-300 text-sm space-y-1">
-          <p><strong class="text-white">License No:</strong> {{ driver.licenseNo }}</p>
-          <p><strong class="text-white">Contact:</strong> {{ driver.contact }}</p>
-          <p><strong class="text-white">Experience:</strong> {{ driver.experience }} Years</p>
-          <p><strong class="text-white">Salary:</strong> {{ driver.salary | currency }}</p>
-          <p><strong class="text-white">Joining Date:</strong> {{ driver.joiningDate | date }}</p>
-          <p><strong class="text-white">Address:</strong> {{ driver.address }}</p>
-          <p><strong class="text-white">Added On:</strong> {{ driver.dateAdded | date }}</p>
-        </div>
-
-        <div class="flex justify-between mt-4 items-center">
-          <div class="flex space-x-2">
-            <button (click)="callDriver(driver.contact)"
-              class="px-3 py-1.5 text-xs bg-green-500/20 text-green-300 border border-green-500/30 rounded-lg hover:bg-green-500/30 transition">
-              📞 Call
+        <footer class="management-card__actions management-card__actions--driver">
+          <div class="management-card__action-group">
+            <button type="button" (click)="callDriver(driver.contact)" class="app-button app-button--success app-button--compact">
+              <span aria-hidden="true">☎</span> Call
             </button>
-            <button (click)="whatsappDriver(driver.contact)"
-              class="px-3 py-1.5 text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg hover:bg-emerald-500/30 transition">
-              💬 WhatsApp
+            <button type="button" (click)="whatsappDriver(driver.contact)" class="app-button app-button--success app-button--compact">
+              <span aria-hidden="true">◉</span> WhatsApp
             </button>
           </div>
-          <div class="flex space-x-2">
-            <button (click)="editDriver(driver)"
-              class="px-3 py-1.5 text-xs bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-lg hover:bg-blue-500/30 transition">
-              Edit
-            </button>
-            <button (click)="deleteDriver(driver)"
-              class="px-3 py-1.5 text-xs bg-red-500/20 text-red-300 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition">
-              Delete
-            </button>
+          <div class="management-card__action-group">
+            <button type="button" (click)="editDriver(driver)" class="app-button app-button--info app-button--compact">Edit</button>
+            <button type="button" (click)="deleteDriver(driver)" class="app-button app-button--danger app-button--compact">Delete</button>
           </div>
-        </div>
+        </footer>
       </div>
+    </div>
+    <div *ngIf="drivers.length === 0" class="text-center text-slate-400 mt-10">
+      👨‍✈️ No drivers found. Add a driver to get started.
     </div>
 
     <!-- Add/Edit Form Dialog (TemplateRef for MatDialog) -->
     <ng-template #driverDialog let-dialogRef="dialogRef">
-      <h2 mat-dialog-title> {{ editingDriver ? 'Edit Driver' : 'Add Driver' }} </h2>
-      <mat-dialog-content>
-      <form #driverFormRef="ngForm" (ngSubmit)="dialogRef.close(driverForm)">
-        <div class="grid grid-cols-1 gap-3">
+      <div class="app-form-dialog">
+        <div class="app-form-dialog__header">
+          <h2 mat-dialog-title>{{ editingDriver ? 'Edit Driver' : 'Add Driver' }}</h2>
+          <p class="app-form-dialog__subtitle">Enter the driver’s contact, employment, and availability details.</p>
+        </div>
+        <form class="app-form-dialog__form" #driverFormRef="ngForm"
+          (ngSubmit)="confirmSaveDriver(driverFormRef, dialogRef)">
+          <mat-dialog-content>
+          <div class="app-form-grid">
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Driver Name</mat-label>
-            <input matInput placeholder="Driver Name" [(ngModel)]="driverForm.name" name="name" #nameCtrl="ngModel"
+            <input matInput [(ngModel)]="driverForm.name" name="name" #nameCtrl="ngModel"
               required minlength="3" />
             <mat-error *ngIf="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)">
               <span *ngIf="nameCtrl.errors?.['required']">Name is required.</span>
@@ -76,7 +80,7 @@
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>License Number</mat-label>
-            <input matInput placeholder="License Number" [(ngModel)]="driverForm.licenseNo" name="licenseNo"
+            <input matInput [(ngModel)]="driverForm.licenseNo" name="licenseNo"
               #licenseCtrl="ngModel" required minlength="4" />
             <mat-error *ngIf="licenseCtrl.invalid && (licenseCtrl.dirty || licenseCtrl.touched)">
               <span *ngIf="licenseCtrl.errors?.['required']">License number is required.</span>
@@ -86,7 +90,7 @@
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Contact Number</mat-label>
-            <input matInput placeholder="Contact Number" [(ngModel)]="driverForm.contact" name="contact"
+            <input matInput [(ngModel)]="driverForm.contact" name="contact"
               #contactCtrl="ngModel" required pattern="^[0-9]{10}$" maxlength="10" minlength="10" />
             <mat-error *ngIf="contactCtrl.invalid && (contactCtrl.dirty || contactCtrl.touched)">
               <span *ngIf="contactCtrl.errors?.['required']">Contact is required.</span>
@@ -97,7 +101,7 @@
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Experience (Years)</mat-label>
-            <input matInput type="number" placeholder="Experience" [(ngModel)]="driverForm.experience" name="experience"
+            <input matInput type="number" [(ngModel)]="driverForm.experience" name="experience"
               #expCtrl="ngModel" min="0" />
             <mat-error *ngIf="expCtrl.invalid && (expCtrl.dirty || expCtrl.touched)">
               <span *ngIf="expCtrl.errors?.['min']">Experience cannot be negative.</span>
@@ -106,7 +110,7 @@
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Salary</mat-label>
-            <input matInput type="number" placeholder="Salary" [(ngModel)]="driverForm.salary" name="salary" #salaryCtrl="ngModel"
+            <input matInput type="number" [(ngModel)]="driverForm.salary" name="salary" #salaryCtrl="ngModel"
               required min="0" />
             <mat-error *ngIf="salaryCtrl.invalid && (salaryCtrl.dirty || salaryCtrl.touched)">
               <span *ngIf="salaryCtrl.errors?.['required']">Salary is required.</span>
@@ -129,14 +133,14 @@
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Address</mat-label>
-            <input matInput placeholder="Address" [(ngModel)]="driverForm.address" name="address" #addressCtrl="ngModel"
+            <input matInput [(ngModel)]="driverForm.address" name="address" #addressCtrl="ngModel"
               minlength="5" />
             <mat-error *ngIf="addressCtrl.invalid && (addressCtrl.dirty || addressCtrl.touched)">
               <span *ngIf="addressCtrl.errors?.['minlength']">Address must be at least 5 characters.</span>
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="fill" class="w-full">
+          <mat-form-field appearance="fill" floatLabel="always" class="w-full">
             <mat-label>Status</mat-label>
             <mat-select [(ngModel)]="driverForm.status" name="status" #statusCtrl="ngModel" required>
               <mat-option value="Available">Available</mat-option>
@@ -146,14 +150,16 @@
               <span>Status is required.</span>
             </mat-error>
           </mat-form-field>
-        </div>
-
-        <div class="flex justify-end mt-4 space-x-3">
-          <button type="button" mat-button (click)="dialogRef.close()">Cancel</button>
-          <button type="submit" mat-raised-button color="primary" [disabled]="driverFormRef.form.invalid">Save</button>
-        </div>
-      </form>
-      </mat-dialog-content>
+          </div>
+          </mat-dialog-content>
+          <mat-dialog-actions class="app-form-dialog__actions" align="end">
+            <button type="button" class="app-button app-button--secondary" (click)="dialogRef.close()">Cancel</button>
+            <button type="submit" class="app-button app-button--primary" [disabled]="driverFormRef.form.invalid">
+              {{ editingDriver ? 'Update Driver' : 'Save Driver' }}
+            </button>
+          </mat-dialog-actions>
+        </form>
+      </div>
     </ng-template>
   </div>
 </div>

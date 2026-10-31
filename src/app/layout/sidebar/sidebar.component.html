@@ -1,55 +1,47 @@
-<div (click)="menuToggle.emit()" class="h-full flex flex-col justify-between p-4 text-white">
-
-  <!-- Header -->
-  <div>
-    <h2 class="text-xl font-semibold mb-8 flex items-center gap-2">
-      🚛 Transport Portal
-    </h2>
-
-    <!-- Navigation -->
-    <nav class="flex flex-col gap-3">
-      <a
-        routerLink="/transport/dashboard"
-        routerLinkActive="bg-white/30"
-        class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
-      >
-        Dashboard
-      </a>
-      <a
-        routerLink="/transport/routes"
-        routerLinkActive="bg-white/30"
-        class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
-      >
-        Routes
-      </a>
-      <a
-        routerLink="/transport/vehicles"
-        routerLinkActive="bg-white/30"
-        class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
-      >
-        Vehicles
-      </a>
-      <a
-        routerLink="/transport/expenses"
-        routerLinkActive="bg-white/30"
-        class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
-      >
-        Expenses
-      </a>
-      <a
-        routerLink="/transport/drivers"
-        routerLinkActive="bg-white/30"
-        class="px-4 py-2 rounded-lg hover:bg-white/20 transition"
-      >
-        Drivers
-      </a> 
-    </nav>
+<aside class="app-sidebar">
+  <div class="app-sidebar__top">
+    <div class="app-sidebar__brand">
+      <span class="app-sidebar__brand-mark" aria-hidden="true">ET</span>
+      <span class="app-sidebar__brand-copy">
+        <strong>EasyTransport</strong>
+        <small>FLEET MANAGEMENT</small>
+      </span>
+    </div>
+    <button
+      type="button"
+      class="app-sidebar__close"
+      (click)="closeRequested.emit()"
+      aria-label="Close navigation menu"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
   </div>
 
-  <!-- Footer -->
-  <footer class="mt-6 border-t border-white/20 pt-4 text-sm text-white/80 text-center">
-    <p>© 2025 Ajay</p>
-    <p class="text-xs opacity-70 mt-1">Smart Transport System</p>
-  </footer>
+  <div class="app-sidebar__section-label">WORKSPACE</div>
+  <nav class="app-sidebar__nav" aria-label="Main navigation">
+    <a
+      *ngFor="let item of navigationItems"
+      [routerLink]="item.route"
+      routerLinkActive="app-sidebar__link--active"
+      [routerLinkActiveOptions]="{ exact: item.exact }"
+      ariaCurrentWhenActive="page"
+      class="app-sidebar__link"
+      (click)="closeRequested.emit()"
+    >
+      <span class="app-sidebar__link-icon" aria-hidden="true">{{ item.icon }}</span>
+      <span>{{ item.label }}</span>
+      <span class="app-sidebar__active-indicator" aria-hidden="true"></span>
+    </a>
+  </nav>
 
-</div>
+  <footer class="app-sidebar__footer">
+    <div class="app-sidebar__status">
+      <span class="app-sidebar__status-dot" aria-hidden="true"></span>
+      <span>
+        <strong>System ready</strong>
+        <small>Transport operations</small>
+      </span>
+    </div>
+    <span class="app-sidebar__copyright">© {{ currentYear }} EasyTransport</span>
+  </footer>
+</aside>

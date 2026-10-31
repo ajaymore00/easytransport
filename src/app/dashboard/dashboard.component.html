@@ -1,151 +1,209 @@
-<div class="p-4 md:p-8 text-white">
-  <!-- Header -->
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-    <h1 class="text-3xl font-bold tracking-wide mb-3 md:mb-0 flex items-center gap-2">
-      <span class="bg-white/10 rounded-full p-2">🚛</span> Transport Dashboard
-    </h1>
-
-    <div class="flex gap-2">
-      <button
-        class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm font-medium backdrop-blur-md transition-all"
-      >
-        Refresh
-      </button>
-      <button
-        class="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-blue-500 hover:to-cyan-500 px-4 py-2 rounded-lg text-sm font-semibold shadow-md transition-all duration-300"
-      >
-        + Add Route
-      </button>
+<main class="dashboard">
+  <header class="dashboard-hero">
+    <div class="dashboard-hero__copy">
+      <span class="dashboard-eyebrow"><span class="dashboard-eyebrow__dot"></span> TRANSPORT OVERVIEW</span>
+      <h1>Good day, here's your fleet at a glance.</h1>
+      <p>Keep track of routes, vehicles, drivers, and expenses in one place.</p>
     </div>
+    <div class="dashboard-hero__date">
+      <span class="dashboard-hero__date-icon" aria-hidden="true">◷</span>
+      <span>{{ today | date:'EEEE, MMMM d, y' }}</span>
+    </div>
+    <div class="dashboard-hero__art" aria-hidden="true">🚚</div>
+  </header>
+
+  <div *ngIf="isLoading" class="dashboard-message dashboard-message--loading" role="status">
+    <span class="dashboard-message__spinner" aria-hidden="true"></span>
+    Loading your dashboard...
   </div>
 
-  <!-- KPI Section -->
-  <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-    <div
-      class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg hover:shadow-indigo-500/10 hover:border-white/20 hover:scale-[1.02] transition-all duration-300"
-    >
-      <p class="text-sm text-white/70">Total Vehicles</p>
-      <div class="flex justify-between items-center mt-1">
-        <h2 class="text-3xl font-bold">{{ vehicles.length }}</h2>
-        <span class="text-3xl">🚚</span>
-      </div>
-    </div>
-
-    <div
-      class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg hover:shadow-indigo-500/10 hover:border-white/20 hover:scale-[1.02] transition-all duration-300"
-    >
-      <p class="text-sm text-white/70">Total Drivers</p>
-      <div class="flex justify-between items-center mt-1">
-        <h2 class="text-3xl font-bold">{{ drivers.length }}</h2>
-        <span class="text-3xl">👨‍✈️</span>
-      </div>
-    </div>
-
-    <div
-      class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg hover:shadow-indigo-500/10 hover:border-white/20 hover:scale-[1.02] transition-all duration-300"
-    >
-      <p class="text-sm text-white/70">Active Routes</p>
-      <div class="flex justify-between items-center mt-1">
-        <h2 class="text-3xl font-bold">{{ todayRoutes.length }}</h2>
-        <span class="text-3xl">🛣️</span>
-      </div>
-    </div>
-
-    <div
-      class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg hover:shadow-indigo-500/10 hover:border-white/20 hover:scale-[1.02] transition-all duration-300"
-    >
-      <p class="text-sm text-white/70">Total Expenses</p>
-      <div class="flex justify-between items-center mt-1">
-        <h2 class="text-3xl font-bold">₹{{ totalExpenses }}</h2>
-        <span class="text-3xl">💰</span>
-      </div>
-    </div>
+  <div *ngIf="hasError" class="dashboard-message dashboard-message--error" role="alert">
+    <span>Dashboard data could not be loaded. Please try again.</span>
+    <button type="button" class="app-button app-button--secondary" (click)="loadDashboard()">Try again</button>
   </div>
 
-  <!-- Dashboard Grid -->
-  <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-    <!-- Today's Routes -->
-    <div
-      class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg hover:border-white/20 hover:shadow-cyan-500/20 transition-all duration-300 card-scroll"
-    >
-      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-        <span class="text-cyan-300 text-xl">📍</span> Today's Routes
-      </h2>
-      <div *ngFor="let route of todayRoutes" class="border-b border-white/10 py-3 last:border-none">
-        <div class="flex justify-between">
-          <p class="font-semibold text-slate-100">{{ route.route }}</p>
-          <span
-            class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full font-semibold border border-green-500/35"
-          >
-            {{ route.status }}
-          </span>
+  <section class="dashboard-stats" aria-label="Fleet summary">
+    <article class="dashboard-stat dashboard-stat--cyan">
+      <div class="dashboard-stat__top">
+        <span class="dashboard-stat__label">Total vehicles</span>
+        <span class="dashboard-stat__icon" aria-hidden="true">🚚</span>
+      </div>
+      <strong class="dashboard-stat__value">{{ vehicles.length }}</strong>
+      <span class="dashboard-stat__hint">In your fleet</span>
+      <span class="dashboard-stat__glow" aria-hidden="true"></span>
+    </article>
+
+    <article class="dashboard-stat dashboard-stat--violet">
+      <div class="dashboard-stat__top">
+        <span class="dashboard-stat__label">Total drivers</span>
+        <span class="dashboard-stat__icon" aria-hidden="true">👨‍✈️</span>
+      </div>
+      <strong class="dashboard-stat__value">{{ drivers.length }}</strong>
+      <span class="dashboard-stat__hint">Ready to keep you moving</span>
+      <span class="dashboard-stat__glow" aria-hidden="true"></span>
+    </article>
+
+    <article class="dashboard-stat dashboard-stat--blue">
+      <div class="dashboard-stat__top">
+        <span class="dashboard-stat__label">Today's routes</span>
+        <span class="dashboard-stat__icon" aria-hidden="true">🛣️</span>
+      </div>
+      <strong class="dashboard-stat__value">{{ todayRoutes.length }}</strong>
+      <span class="dashboard-stat__hint">Scheduled for today</span>
+      <span class="dashboard-stat__glow" aria-hidden="true"></span>
+    </article>
+
+    <article class="dashboard-stat dashboard-stat--amber">
+      <div class="dashboard-stat__top">
+        <span class="dashboard-stat__label">Total expenses</span>
+        <span class="dashboard-stat__icon" aria-hidden="true">₹</span>
+      </div>
+      <strong class="dashboard-stat__value dashboard-stat__value--currency">
+        ₹{{ totalExpenses | number:'1.0-0' }}
+      </strong>
+      <span class="dashboard-stat__hint">Across recorded expenses</span>
+      <span class="dashboard-stat__glow" aria-hidden="true"></span>
+    </article>
+  </section>
+
+  <section class="dashboard-content" aria-label="Fleet activity">
+    <article class="dashboard-panel dashboard-panel--routes">
+      <header class="dashboard-panel__header">
+        <div class="dashboard-panel__title-wrap">
+          <span class="dashboard-panel__icon dashboard-panel__icon--cyan" aria-hidden="true">⌖</span>
+          <div>
+            <h2>Today's routes</h2>
+            <p>Live schedule overview</p>
+          </div>
         </div>
-        <p class="text-sm text-slate-400 mt-1">Time: {{ route.time }}</p>
-      </div>
-    </div>
+        <span class="dashboard-panel__count">{{ todayRoutes.length }} routes</span>
+      </header>
 
-    <!-- Vehicles -->
-    <div
-      class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg hover:border-white/20 hover:shadow-blue-500/20 transition-all duration-300 card-scroll"
-    >
-      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-        <span class="text-yellow-300 text-xl">🚗</span> Vehicles
-      </h2>
-      <div *ngFor="let vehicle of vehicles" class="border-b border-white/10 py-3 last:border-none">
-        <p class="font-semibold text-slate-100">{{ vehicle.name }}</p>
-        <p class="text-sm text-slate-400">Type: {{ vehicle.type }}</p>
-        <p
-          [ngClass]="{
-            'text-green-400': vehicle.status === 'Active',
-            'text-red-400': vehicle.status === 'Inactive'
-          }"
-          class="text-xs font-medium"
-        >
-          {{ vehicle.status }}
-        </p>
-      </div>
-    </div>
-
-    <!-- Future Routes -->
-    <div
-      class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg hover:border-white/20 hover:shadow-indigo-500/20 transition-all duration-300 card-scroll"
-    >
-      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-        <span class="text-blue-300 text-xl">🗓️</span> Upcoming Routes
-      </h2>
-      <div *ngFor="let route of futureRoutes" class="border-b border-white/10 py-3 last:border-none">
-        <p class="font-semibold text-slate-100">{{ route.route }}</p>
-        <p class="text-sm text-slate-400">Date: {{ route.date }}</p>
-      </div>
-    </div>
-
-    <!-- Expenses -->
-    <div
-      class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg hover:border-white/20 hover:shadow-green-500/20 transition-all duration-300 card-scroll"
-    >
-      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-        <span class="text-red-300 text-xl">💵</span> Recent Expenses
-      </h2>
-      <div *ngFor="let exp of expenses" class="border-b border-white/10 py-3 last:border-none">
-        <div class="flex justify-between">
-          <p class="font-medium text-slate-200">{{ exp.type }}</p>
-          <p class="text-sm font-semibold text-slate-100">₹{{ exp.amount }}</p>
+      <div *ngFor="let route of todayRoutes" class="dashboard-route">
+        <div class="dashboard-route__timeline" aria-hidden="true"><span></span></div>
+        <div class="dashboard-route__body">
+          <div class="dashboard-route__topline">
+            <h3>{{ route.route }}</h3>
+            <span class="dashboard-status" [ngClass]="statusClass(route.status)">{{ route.status }}</span>
+          </div>
+          <p class="dashboard-route__time"><span aria-hidden="true">◷</span> {{ route.time || 'Time not set' }}</p>
         </div>
-        <p class="text-xs text-slate-400">{{ exp.date }}</p>
       </div>
-    </div>
 
-    <!-- Drivers -->
-    <div
-      class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 shadow-lg hover:border-white/20 hover:shadow-purple-500/20 transition-all duration-300 card-scroll"
-    >
-      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-        <span class="text-purple-300 text-xl">👷‍♂️</span> Drivers
-      </h2>
-      <div *ngFor="let driver of drivers" class="border-b border-white/10 py-3 last:border-none">
-        <p class="font-medium text-slate-200">{{ driver.name }}</p>
-        <p class="text-sm text-slate-400">{{ driver.contact }}</p>
+      <div *ngIf="!isLoading && !hasError && todayRoutes.length === 0" class="dashboard-empty">
+        <span aria-hidden="true">🛣️</span>
+        <p>No routes scheduled for today.</p>
       </div>
-    </div>
-  </div>
-</div>
+    </article>
+
+    <article class="dashboard-panel dashboard-panel--upcoming">
+      <header class="dashboard-panel__header">
+        <div class="dashboard-panel__title-wrap">
+          <span class="dashboard-panel__icon dashboard-panel__icon--blue" aria-hidden="true">▦</span>
+          <div>
+            <h2>Upcoming routes</h2>
+            <p>What's coming next</p>
+          </div>
+        </div>
+        <span class="dashboard-panel__count">{{ futureRoutes.length }} planned</span>
+      </header>
+
+      <div *ngFor="let route of futureRoutes" class="dashboard-upcoming">
+        <span class="dashboard-upcoming__date">{{ route.date | date:'MMM d' }}</span>
+        <div class="dashboard-upcoming__details">
+          <h3>{{ route.route }}</h3>
+          <p>{{ route.date | date:'EEEE, y' }}</p>
+        </div>
+        <span class="dashboard-upcoming__arrow" aria-hidden="true">→</span>
+      </div>
+
+      <div *ngIf="!isLoading && !hasError && futureRoutes.length === 0" class="dashboard-empty">
+        <span aria-hidden="true">🗓️</span>
+        <p>No upcoming routes planned.</p>
+      </div>
+    </article>
+
+    <article class="dashboard-panel dashboard-panel--upcoming">
+      <header class="dashboard-panel__header">
+        <div class="dashboard-panel__title-wrap">
+          <span class="dashboard-panel__icon dashboard-panel__icon--amber" aria-hidden="true">🚚</span>
+          <div>
+            <h2>Vehicles</h2>
+            <p>Your fleet at work</p>
+          </div>
+        </div>
+        <span class="dashboard-panel__count">{{ vehicles.length }} total</span>
+      </header>
+
+      <div *ngFor="let vehicle of vehicles" class="dashboard-list-item">
+        <span class="dashboard-list-item__avatar" aria-hidden="true">🚛</span>
+        <div class="dashboard-list-item__details">
+          <h3>{{ vehicle.name }}</h3>
+          <p>{{ vehicle.type }}</p>
+        </div>
+        <span class="dashboard-status" [ngClass]="statusClass(vehicle.status)">{{ vehicle.status }}</span>
+      </div>
+
+      <div *ngIf="!isLoading && !hasError && vehicles.length === 0" class="dashboard-empty">
+        <span aria-hidden="true">🚚</span>
+        <p>No vehicles in your fleet yet.</p>
+      </div>
+    </article>
+
+    <article class="dashboard-panel dashboard-panel--upcoming">
+      <header class="dashboard-panel__header">
+        <div class="dashboard-panel__title-wrap">
+          <span class="dashboard-panel__icon dashboard-panel__icon--green" aria-hidden="true">₹</span>
+          <div>
+            <h2>Recent expenses</h2>
+            <p>Latest recorded costs</p>
+          </div>
+        </div>
+        <span class="dashboard-panel__count">₹{{ totalExpenses | number:'1.0-0' }} total</span>
+      </header>
+
+      <div *ngFor="let expense of expenses" class="dashboard-expense">
+        <span class="dashboard-expense__icon" aria-hidden="true">↗</span>
+        <div class="dashboard-expense__details">
+          <h3>{{ expense.type }}</h3>
+          <p>{{ expense.date | date:'MMM d, y' }}</p>
+        </div>
+        <strong>₹{{ expense.amount | number:'1.0-0' }}</strong>
+      </div>
+
+      <div *ngIf="!isLoading && !hasError && expenses.length === 0" class="dashboard-empty">
+        <span aria-hidden="true">💰</span>
+        <p>No expenses recorded yet.</p>
+      </div>
+    </article>
+
+    <article class="dashboard-panel dashboard-panel--upcoming">
+      <header class="dashboard-panel__header">
+        <div class="dashboard-panel__title-wrap">
+          <span class="dashboard-panel__icon dashboard-panel__icon--violet" aria-hidden="true">♙</span>
+          <div>
+            <h2>Drivers</h2>
+            <p>Your people on the road</p>
+          </div>
+        </div>
+        <span class="dashboard-panel__count">{{ drivers.length }} total</span>
+      </header>
+
+      <div *ngFor="let driver of drivers" class="dashboard-list-item">
+        <span class="dashboard-list-item__avatar dashboard-list-item__avatar--driver" aria-hidden="true">
+          {{ driver.name.charAt(0) }}
+        </span>
+        <div class="dashboard-list-item__details">
+          <h3>{{ driver.name }}</h3>
+          <p>{{ driver.contact }}</p>
+        </div>
+        <span class="dashboard-driver-indicator" title="Driver on roster"></span>
+      </div>
+
+      <div *ngIf="!isLoading && !hasError && drivers.length === 0" class="dashboard-empty">
+        <span aria-hidden="true">👷</span>
+        <p>No drivers added yet.</p>
+      </div>
+    </article>
+  </section>
+</main>

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,6 +11,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { DashboardService } from '../services/dashboard.service'; 
 import {MatTimepickerModule} from '@angular/material/timepicker';
+import { ConfirmationService } from '../services/confirmation.service';
 
 @Component({
   selector: 'app-route',
@@ -20,7 +20,6 @@ import {MatTimepickerModule} from '@angular/material/timepicker';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -32,8 +31,6 @@ import {MatTimepickerModule} from '@angular/material/timepicker';
     MatTimepickerModule
   ],
   templateUrl: './route.component.html',
-  styleUrl: './route.component.scss',
-  providers: [DashboardService],
 })
 export class RouteComponent implements OnInit {
   @ViewChild('routeDialog') routeDialog!: TemplateRef<any>;
@@ -52,7 +49,12 @@ export class RouteComponent implements OnInit {
 
   statuses = ['Pending', 'In Transit', 'Delivered', 'Cancelled'];
 
-  constructor(private dialog: MatDialog, private fb: FormBuilder, private dashboardService: DashboardService) {
+  constructor(
+    private dialog: MatDialog,
+    private fb: FormBuilder,
+    private dashboardService: DashboardService,
+    private confirmation: ConfirmationService,
+  ) {
     this.routeForm = this.buildRouteForm();
   }
 
@@ -175,9 +177,10 @@ export class RouteComponent implements OnInit {
     });
     this.checkpointInput = '';
     this.dialog.open(this.routeDialog, {
-      width: '90%',
-      maxWidth: '900px',
-      panelClass: 'route-dialog-panel',
+      width: '720px',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: '90vh',
+      panelClass: 'app-form-dialog-panel',
     });
   }
 
@@ -217,6 +220,17 @@ export class RouteComponent implements OnInit {
       return;
     }
 
+    const action = this.editMode ? 'update' : 'create';
+    this.confirmation.confirm(
+      `${action === 'update' ? 'Update' : 'Create'} route?`,
+      `Are you sure you want to ${action} this route?`,
+      action === 'update' ? 'Update route' : 'Create route',
+    ).subscribe((confirmed) => {
+      if (confirmed) this.persistRoute();
+    });
+  }
+
+  private persistRoute() {
     const formValue = this.routeForm.value;
     const payload = {
       routeName: formValue.name,
@@ -274,19 +288,41 @@ export class RouteComponent implements OnInit {
 
   deleteRoute(id: any) {
     const routeId = id?.toString();
-    this.dashboardService.deleteData('routes', routeId).subscribe({
-      next: () => {
-        this.routes = this.routes.filter((r) => r.id !== routeId && r.id !== id);
-      },
-      error: (error) => {
-        console.error('Failed to delete route:', error);
-      },
+    if (!routeId) return;
+
+    this.confirmation.confirm('Delete route?', 'Are you sure you want to delete this route?', 'Delete route', true)
+      .subscribe((confirmed) => {
+        if (!confirmed) return;
+
+        this.dashboardService.deleteData('routes', routeId).subscribe({
+          next: () => {
+            this.routes = this.routes.filter((r) => r.id !== routeId && r.id !== id);
+          },
+          error: (error) => {
+            console.error('Failed to delete route:', error);
+          },
+        });
     });
   }
 
   getControl(name: string) {
     return this.routeForm.get(name);
   }
+
+  statusClass(status?: string): string {
+    const value = status?.toLowerCase() ?? '';
+    if (value.includes('delivered') || value.includes('active')) {
+      return 'management-card__status--success';
+    }
+    if (value.includes('pending') || value.includes('transit')) {
+      return 'management-card__status--warning';
+    }
+    if (value.includes('cancel')) {
+      return 'management-card__status--neutral';
+    }
+    return 'management-card__status--info';
+  }
+
   viewMap(trip: any) {
     alert(`Opening map for ${trip.routeName}`);
   }

@@ -3,15 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { HttpClientModule } from '@angular/common/http';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, FormsModule,HttpClientModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.scss'],
-  providers: [AuthService],
 })
 export class ForgotPasswordComponent {
   mobileNumber = '';
@@ -32,11 +31,15 @@ export class ForgotPasswordComponent {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 
-  constructor(private router: Router, private auth: AuthService) { }
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+    private notifications: NotificationService,
+  ) { }
 
   requestReset() {
     if (!this.mobileNumber) {
-      alert('Please enter your mobile number');
+      this.notifications.error('Please enter your mobile number.');
       return;
     }
     this.isLoading = true;
@@ -44,23 +47,23 @@ export class ForgotPasswordComponent {
       next: (res) => {
         this.isLoading = false;
         this.message = res?.message || 'OTP sent to your mobile.';
+        this.notifications.success(this.message);
         if (res?.otp) alert(`OTP (dev): ${res.otp}`);
         this.step = 2;
       },
-      error: (err) => {
+      error: () => {
         this.isLoading = false;
-        alert(err?.error?.message || 'Request failed');
       }
     });
   }
 
   verifyReset() {
     if (!this.otp || !this.password || !this.confirmPassword) {
-      alert('Please fill all fields');
+      this.notifications.error('Please fill all fields.');
       return;
     }
     if (this.password !== this.confirmPassword) {
-      alert('Passwords do not match');
+      this.notifications.error('Passwords do not match.');
       return;
     }
 
@@ -68,12 +71,11 @@ export class ForgotPasswordComponent {
     this.auth.forgotVerify({ mobileNumber: this.mobileNumber, otp: this.otp, password: this.password, confirmPassword: this.confirmPassword }).subscribe({
       next: (res) => {
         this.isLoading = false;
-        alert(res?.message || 'Password reset successful');
+        this.notifications.success(res?.message || 'Password reset successful.');
         this.router.navigate(['/auth/login']);
       },
-      error: (err) => {
+      error: () => {
         this.isLoading = false;
-        alert(err?.error?.message || 'Verify failed');
         this.step = 1;
         this.otp = '';
       }
@@ -82,19 +84,18 @@ export class ForgotPasswordComponent {
 
   resendOtp() {
     if (!this.mobileNumber) {
-      alert('Please enter mobile number to resend OTP');
+      this.notifications.error('Please enter your mobile number to resend OTP.');
       return;
     }
     this.isLoading = true;
     this.auth.resendOtp({ mobileNumber: this.mobileNumber, purpose: 'forgot-password' }).subscribe({
       next: (res) => {
         this.isLoading = false;
-        alert(res?.message || 'OTP resent');
+        this.notifications.success(res?.message || 'OTP resent.');
         if (res?.otp) alert(`OTP (dev): ${res.otp}`);
       },
-      error: (err) => {
+      error: () => {
         this.isLoading = false;
-        alert(err?.error?.message || 'Resend failed');
       }
     });
   }

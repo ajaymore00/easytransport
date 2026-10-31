@@ -17,24 +17,22 @@
         <div>
           <label>Mobile Number</label>
           <input type="tel" [(ngModel)]="mobileNumber" name="mobileNumber" required
-            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none border border-white/30 placeholder-white/60"
-            placeholder="10-digit mobile number">
+            class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none border border-white/30">
         </div>
 
         <div>
           <label>Password</label>
           <div class="relative">
             <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required
-              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none border border-white/30 placeholder-white/60"
-              placeholder="••••••••">
-            <button type="button" (click)="togglePassword()" class="absolute right-3 top-2.5 text-sm">
+              class="w-full mt-1 px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none border border-white/30">
+            <button type="button" (click)="togglePassword()"
+              class="app-icon-button app-icon-button--quiet app-icon-button--small absolute right-3 top-2.5">
               <i class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</i>
             </button>
           </div>
         </div>
 
-        <button [disabled]="isLoading"
-          class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-blue-500 hover:to-cyan-400 text-white py-2 rounded-lg font-semibold transition-transform hover:scale-105">
+        <button type="submit" [disabled]="isLoading" class="app-button app-button--primary app-button--block">
           {{ isLoading ? 'Logging in...' : 'Login' }}
         </button>
 
